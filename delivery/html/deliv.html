@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Registration</title>
+    <script src="/js/delivery_register.js" defer></script>
+    <link rel="stylesheet" href="/delivery/css/deliv.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-wrapper-1">
+        <div class="container1">
+            <div class="logo">
+                <!-- <p>D</p> -->
+                <h4>Register Yourself Here</h4>
+            </div>
+            <h1>Making Delivery? Welcome!</h1>
+            <p id="p">Please Enter Your Details Below</p>
+        </div>
+        <form id="deliveryRegistrationForm">
+            <div class="input">
+                <input type="text" name="name" placeholder="Enter Your Name" id="name" required><br>
+                <input type="tel" name="tel" placeholder="Contact" id="tel" required><br>
+                <input type="text" name="company" placeholder="Delivery Company" id="company" required><br>
+                <!-- <input type="text" name="item" placeholder="Item(s) for delivery" id="item" required><br> -->
+                <select name="receiver" id="receiver" required>
+                    <option value="" disabled selected>Who are you delivering to?</option>
+                    <option value="reception">Reception</option>
+                    <!-- <option value="manager">Manager</option>
+                    <option value="hr">Human Resource</option> -->
+                    <option value="">Employee</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <button class="btn1" id="back" onclick="location.href='/assets/html/details.html'" >Back</button>
+        <button class="btn" id="continue" onclick="submitForm()">Continue</button>
+    </footer>
+</body>
+</html>

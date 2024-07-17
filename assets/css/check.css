@@ -1,0 +1,12 @@
+body{
+    background-color: brown;
+}
+button{
+    width: 40%;
+    height: 20vh;
+    color: rgb(226, 53, 53);
+    font-size: 60px;
+}
+.btn{
+    background-color: black;
+}

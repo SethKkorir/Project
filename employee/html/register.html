@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Check-in</title>
+    <link rel="stylesheet" href="/employee/css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-wrapper-1">
+        <div class="container1">
+            <div class="logo">
+                <h4>Login Here</h4>
+            </div>
+            <h1>Coming For Work, Welcome!!</h1>
+            <p id="p">Please enter your PIN code to check-in</p>
+        </div>
+        <div class="pin-input">
+            <input type="text" id="pin-input" maxlength="4" placeholder="Enter PIN" />
+        </div>
+        <div class="pin-result">
+            <p id="pin-result-text"></p>
+        </div>
+    </div>
+    <footer>
+        <button class="btn1" id="back" onclick="location.href='/assets/html/details.html'" >Back</button>
+        <button class="btn" id="check-in" onclick="location.href='/assets/html/wel.html'" >Check-in</button>
+    </footer>
+
+    <!-- <script>
+        const pinInput = document.getElementById('pin-input');
+        const pinResultText = document.getElementById('pin-result-text');
+
+        // Function to handle the PIN code input
+        pinInput.addEventListener('input', () => {
+            if (pinInput.value.length === 4) {
+                handlePINCode(pinInput.value);
+            }
+        });
+
+        // Function to handle the PIN code data
+        function handlePINCode(pin) {
+            // Perform actions based on the entered PIN code
+            console.log('Entered PIN code:', pin);
+            // Example: Send a check-in request to the server
+            checkIn(pin);
+        }
+
+        // Function to perform the check-in process
+        function checkIn(pin) {
+            // Send a check-in request to the server
+            fetch('/check-in', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pinCode: pin })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Check-in response:', data);
+                // Handle the check-in response
+                if (data.success) {
+                    pinResultText.textContent = 'Check-in successful!';
+                } else {
+                    pinResultText.textContent = 'Invalid PIN code. Please try again.';
+                }
+            })
+            .catch(error => {
+                console.error('Error during check-in:', error);
+                pinResultText.textContent = 'An error occurred during check-in. Please try again later.';
+            });
+        }
+
+        // Function to go back to the previous page
+        function goBack() {
+            // Implement the logic to navigate to the previous page
+            console.log('Going back to the previous page');
+        }
+    </script> -->
+</body>
+</html>
