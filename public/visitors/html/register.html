@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Registration</title>
+
+    <link rel="stylesheet" href="/public/visitors/css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <form action="/users" method="post" id="userForm">
+        <div class="container-wrapper-1">
+            <div class="container1">
+                <div class="logo">
+                    <h4>Register Yourself Here</h4>
+                </div>
+                <h1>New Visitor? Welcome!</h1>
+                <p>Please Enter Your Details Below for Check-in</p>
+            </div>
+            <div class="input">
+                <input type="text" name="name" id="name" placeholder="Name"><br>
+                <input type="email" name="email" id="email" placeholder="Email"><br>
+                <input type="text" name="company" id="company" placeholder="Company (optional)"><br>
+                <select name="whoAreYouVisiting" id="whoAreYouVisiting">
+                    <option value="" disabled selected>Select who are you visiting?</option>
+                    <option value="manager">Manager</option>
+                    <option value="hr">Human Resource</option>
+                </select><br>
+                <input type="text" name="purposeOfVisiting" id="purposeOfVisiting" placeholder="Reason for visiting">
+            </div>
+        </div>
+        <footer>
+            <button class="btn1" id="back" onclick="location.href='/assets/html/details.html'">Back</button>
+            <button class="btn" id="continue" type="submit">Continue</button>
+        </footer>
+    </form>
+    <script src="/public/visitors/js/register.js"></script>
+</body>
+</html>
