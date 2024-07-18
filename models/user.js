@@ -1,18 +1,19 @@
 const mongoose = require('mongoose');
 
+// Visitor Schema
 const visitorSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
     },
-    email:{
+    email: {
         type: String,
         required: true,
-        unique:true,
-        lowercae: true,
-        trim:true
-    }, 
-    company:{
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
+    company: {
         type: String,
         required: true
     },
@@ -20,12 +21,11 @@ const visitorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    reasonForVisiting: {
+    purposeOfVisiting: {
         type: String,
         required: true
     }
-        
-    
 });
-const User = mongoose.model('user', visitorSchema);
-module.exports = user;
+
+const User = mongoose.model('User', visitorSchema);
+module.exports = User;
