@@ -371,3 +371,64 @@ header {
     height: calc(100vh - 70px);
   }
 }
+/* Report Styles */
+.report-container {
+  margin-bottom: 20px; /* Space between report containers */
+}
+
+.report-header {
+  border-bottom: 2px solid var(--secondary-color); /* Underline for header */
+  padding-bottom: 10px; /* Space below header */
+}
+
+.report-header h1 {
+  font-size: 24px; /* Larger font for report titles */
+  color: var(--primary-color);
+}
+
+.report-body {
+  background-color: var(--background-color2); /* Light background for report body */
+  padding: 15px; /* Padding inside the report body */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.report-topic-heading {
+  font-weight: 600; /* Bold headings */
+}
+
+.items {
+  border-top: 1px solid var(--background-color3); /* Top border for item list */
+  padding-top: 10px; /* Space above items */
+}
+
+.item1 {
+  padding: 10px; /* Padding for each item */
+  background-color: var(--background-color1); /* Background color for items */
+  border-radius: 5px; /* Rounded corners for items */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.item1:hover {
+  background-color: var(--secondary-color); /* Change background on hover */
+}
+
+.t-op-nextlvl {
+  font-weight: 500; /* Medium weight for item text */
+  color: var(--text-color); /* Text color for item details */
+}
+
+/* Responsive adjustments for reports */
+@media screen and (max-width: 900px) {
+  .report-header h1 {
+      font-size: 20px; /* Smaller font size on mobile */
+  }
+
+  .item1 {
+      flex-direction: column; /* Stack items vertically on small screens */
+      align-items: flex-start; /* Align items to start */
+  }
+
+  .t-op-nextlvl {
+      width: 100%; /* Full width for item text on small screens */
+  }
+}

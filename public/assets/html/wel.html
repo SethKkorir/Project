@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Ebrad</title>
+  <link rel="stylesheet" href="/public/assets/css/wel.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <main>
+    <section class="intro">
+      <h1>Welcome to <br>Ebrad!</h1>
+    </section>
+  </main>
+
+  <section>
+    <div class="qrcode">
+      <h3>Scan QR code for <br> Touchless Registration</h3> <br>
+      <img src=""\ alt="qr code" id="qrcode" style="background-color: transparent;">
+    </div>
+  </section>
+  
+  <footer>
+    <button>
+      <i class="fa-solid fa-circle-check"></i>
+      <a style="text-decoration: none;" href="/public/visitors/html/register.html">Check-in</a>
+    </button>
+  </footer>
+
+  <script>
+    // Fetch the QR code when the page loads
+    fetch('http://127.0.0.1:8002/generateQR')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(data => {
+        const qrCodeImage = document.getElementById('qrcode');
+        qrCodeImage.src = data; // Set the QR code image
+      })
+      .catch(err => {
+        console.error('Error fetching QR code', err);
+      });
+//       const cors = require('cors');
+// app.use(cors());
+  </script>
+</body>
+</html>

@@ -1,8 +1,11 @@
 const express = require('express');
 const User = require('./models/user');
 const cors = require('cors');
+const QRCode = require('qrcode');     
 // const mongoose = require('mongoose');
 require('dotenv').config();
+const defaultPort = 8002;
+let port = process.env.PORT || defaultPort
 
 
 // To import the users routes
@@ -15,47 +18,31 @@ app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
 app.use('/api/users', UserRoutes);
+const logoDesignUrl = 'http://127.0.0.1:5500/public/visitors/html/register.html';
 
-const PORT = process.env.PORT ||3000;
-// /
-// // API Endpoint to Get All Visitors (GET request to '/visitors')
-// app.get('/users', async (req, res) => {
-//     try {
-//       return res.json("Hello words");
-//       console.log('Fetching all users...');
-//       const users = await User.find();
-//       console.log('Users found:', users);
-//       res.json(users);
-      
-//     } catch (error) {
-//       console.error('Error fetching users:', error.message);
-//       res.status(500).json({ message: 'Server Error' });
-//     }
-//   });
-//   app.post('/users', async (req, res) => {
-//     try {
-//       return res.json("Hello World.");
-//       console.log('Request body:', req.body);
+app.get('/generateQR', async (req, res) => {
+    try {
+      const qrCodeImage = await QRCode.toDataURL(logoDesignUrl);
+      res.send(qrCodeImage); // Return only the data URL
+    } catch (err) {
+      console.error('Error generating QR code:', err);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+
+const startServer = (port) => {
+    const server = app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
   
-//       // Validate the request body
-//       if (!req.body.name || !req.body.email || !req.body.company || !req.body.whoAreYouVisiting || !req.body.purposeOfVisiting) {
-//         return res.status(400).json({ message: 'All required fields must be provided.' });
-//       }
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.log(`Port ${port} is already in use, trying another port...`);
+        startServer(port + 1);
+      } else {
+        console.error(`Server error: ${err}`);
+      }
+    });
+  };
   
-//       const user = new User(req.body);
-//       await user.save();
-//       console.log('Saved user:', user);
-//       res.status(201).json(user);
-//     } catch (error) {
-//       console.error('Error creating user:', error.message);
-//       res.status(400).json({ message: error.message });
-//     }
-//   });
-
-
-// To start the server
-app.listen(PORT, () => {
-    console.log(`Server has started at ${PORT}`);
-});
-
-
+  startServer(port);

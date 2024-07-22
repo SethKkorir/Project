@@ -16,7 +16,7 @@
     <!-- Header Section -->
     <header>
         <div class="logosec">
-            <div class="logo">Visitor Management System</div>
+            <div class="logo">Ebrad VMS</div>
             <i class="fas fa-bars menuicn" id="menuicn"></i>
         </div>
 
@@ -31,7 +31,7 @@
             <div class="circle"></div>
             <i class="fas fa-envelope"></i>
             <div class="dp">
-                <img src="profile-pic.png" class="dpicn" alt="profile-pic">
+                <img src="/images/SETH.jpg" class="dpicn" alt="profile-pic">
             </div>
         </div>
     </header>
@@ -56,10 +56,6 @@
                     <div class="nav-option option4">
                         <i class="fas fa-truck"></i>
                         <h3>Deliveries</h3>
-                    </div>
-                    <div class="nav-option option5">
-                        <i class="fas fa-users"></i>
-                        <h3>Employees</h3>
                     </div>
                     <div class="nav-option option6">
                         <i class="fas fa-cog"></i>
@@ -103,15 +99,28 @@
                     </div>
                     <i class="fas fa-truck"></i>
                 </div>
-                <div class="box box4">
-                    <div class="text">
-                        <h2 class="topic-heading">200</h2>
-                        <h2 class="topic">Employees</h2>
+            </div>
+               <!-- User Data Section -->
+               <div class="report-container">
+                <div class="report-header">
+                    <h1 class="recent-Entities">All Visitors</h1>
+                </div>
+
+                <div class="report-body">
+                    <div class="report-topic-heading">
+                        <h3 class="t-op">Name</h3>
+                        <h3 class="t-op">Email</h3>
+                        <h3 class="t-op">Company</h3>
+                        <h3 class="t-op">Who are they visiting</h3>
+                        <h3 class="t-op">Purpose of visiting</h3>
                     </div>
-                    <i class="fas fa-users"></i>
+
+                    <div class="items">
+                        <!-- User data will be populated here -->
+                    </div>
                 </div>
             </div>
-
+            <!-- Recent Visitors Section -->
             <div class="report-container">
                 <div class="report-header">
                     <h1 class="recent-Entities">Recent Visitors</h1>
@@ -139,14 +148,16 @@
                             <h3 class="t-op-nextlvl">11:30 AM</h3>
                             <h3 class="t-op-nextlvl label-tag">Checked-out</h3>
                         </div>
-                        <!-- Add more visitor records here -->
+                        <!-- More static visitor records can go here -->
                     </div>
                 </div>
             </div>
+
+         
         </div>
     </div>
 
-    <script src="./index.js"></script>
+    <script src="/public/admin/index.js"></script> <!-- Include your JavaScript file -->
 </body>
 
 </html>
