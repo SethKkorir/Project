@@ -1,144 +1,110 @@
-* {
-    margin: unset;
-    padding: unset;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+:root {
+  --background-color1: #f0f2f5;
+  --background-color2: #ffffff;
+  --background-color3: #e0e0e0;
+  --background-color4: #d6e4ff;
+  --primary-color: #3a3b45;
+  --secondary-color: #5c6ac4;
+  --accent-color: #3f51b5;
+  --text-color: #343a40;
+  --notification-bg: #f8d7da; /* Light red background */
+  --notification-color: #721c24; /* Dark red text */
+  --page-bg: #ffdddd; /* Light red background for the page */
 }
 
 body {
-    background: rgb(119, 108, 108);
-    background-size: cover;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--page-bg);
+  margin: 0;
+  padding: 0;
 }
 
-.container-wrapper-1 {
-    padding-top: 50px;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 600px;
-    min-width: fit-content;
-    max-height: 500px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 50px 60px 70px;
-    text-align: center;
+#notification {
+  background-color: var(--notification-bg);
+  color: var(--notification-color);
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 300px;
+  border-bottom-left-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
 }
 
-.logo h4 {
-    color: rgb(207, 43, 43);
-    margin-left: 1%;
-    font-size: 20px;
-    margin-top: 5px;
-    margin-bottom: 20px;
+#notification-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.pin-input {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+#dashboard, #visitor-approval, #visitor-history {
+  margin: 20px;
+  padding: 20px;
+  background-color: var(--background-color1);
+  border-radius: 10px;
+  box-shadow: 1px 1px 15px rgba(161, 182, 253, 0.825);
 }
 
-.pin-input input {
-    width: 50px;
-    height: 50px;
-    font-size: px;
-    text-align: center;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    margin: 0 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
+#dashboard {
+  display: flex;
+  flex-direction: column;
 }
 
-.pin-input input:focus {
-    border-color: #007bff;
+#dashboard h2 {
+  font-size: 24px;
+  color: var(--primary-color);
 }
 
-.pin-result {
-    margin-top: 20px;
-    font-size: 10px;
-    font-weight: bold;
+#summary p {
+  font-size: 16px;
+  color: var(--text-color);
 }
 
-.btn {
-    min-width: fit-content;
-    position: absolute;
-    right: 60px;
-    bottom: 10%;
-    font-size: 18px;
-    margin-top: 20px;
-    width: 20%;
-    height: 50px;
-    border: none;
-    border-radius: 10px;
-    background-image: linear-gradient(90deg, hsl(197deg 100% 63%) 0%, hsl(208deg 100% 60%) 17%, hsl(294deg 100% 55%) 100%);
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
 
-.btn:hover {
-    color: rgb(255, 255, 255);
-    box-shadow: 10px 10px 10px 0 rgb(0, 0, 0);
-    background: green;
-    cursor: pointer;
+th, td {
+  padding: 10px;
+  border: 1px solid var(--background-color3);
+  text-align: left;
 }
 
-.btn1 {
-    min-width: fit-content;
-    min-height: fit-content;
-    position: absolute;
-    left: 60px;
-    bottom: 10%;
-    font-size: 18px;
-    margin-top: 20px;
-    width: 20%;
-    height: 50px;
-    border: none;
-    border-radius: 10px;
-    background-image: linear-gradient(90deg, hsl(197deg 100% 63%) 0%, hsl(208deg 100% 60%) 17%, hsl(294deg 100% 55%) 100%);
+th {
+  background-color: var(--background-color2);
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
-.btn1:hover {
-    color: rgb(255, 255, 255);
-    box-shadow: 10px 10px 10px 10px rgb(0, 0, 0);
-    background: red;
-    cursor: pointer;
+td {
+  color: var(--text-color);
 }
 
-/* Responsive styles */
-@media (min-width: 768px) {
-    .container-wrapper-1 {
-        width: 80%;
-        padding: auto;
-    }
-
-    .btn, .btn1 {
-        font-size: 20px;
-        width: 30%;
-        height: 50px;
-        margin-top: 30px;
-    }
-
-    .pin-input input {
-        width: 60px;
-        height: 60px;
-        font-size: 28px;
-    }
+button {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 5px;
 }
 
-@media (min-width: 1024px) {
-    .container-wrapper-1 {
-        width: 100%;
-        padding: auto;
-    }
+button:hover {
+  background-color: var(--primary-color);
+}
 
-    .btn, .btn1 {
-        font-size: 20px;
-        width: 15%;
-        height: 80px;
-    }
-
-    .pin-input input {
-        width: 80px;
-        height: 80px;
-        font-size: 32px;
-    }
+h3 {
+  font-size: 18px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
 }

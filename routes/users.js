@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+// const Host = require('../models/host');
+
 const nodemailer = require('nodemailer');
+require('events').EventEmitter.defaultMaxListeners = 20; // or any appropriate number
+
 
 // Nodemailer configuration
 const mailTransporter = nodemailer.createTransport({

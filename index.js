@@ -1,5 +1,7 @@
 const express = require('express');
 const User = require('./models/user');
+// const Host = require('./models/host');
+
 const cors = require('cors');
 const QRCode = require('qrcode');     
 // const mongoose = require('mongoose');

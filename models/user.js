@@ -27,5 +27,6 @@ const visitorSchema = new mongoose.Schema({
     }
 });
 
+
 const User = mongoose.model('User', visitorSchema);
 module.exports = User;
