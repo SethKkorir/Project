@@ -30,36 +30,48 @@ socket.addEventListener('message', (event) => {
 });
 
 
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        // Fetch user data from the API
-        const response = await fetch('http://localhost:8002/api/users'); // Adjust the URL if necessary
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+document.addEventListener('DOMContentLoaded', () => {
+    const itemsContainer = document.querySelector('.items'); // Target the items div in the All Visitors section
+    const reportContainer = document.getElementById('allVisitorsReport'); // Target the report container
+
+    // Function to fetch and display user data
+    const fetchAndDisplayUsers = async () => {
+        try {
+            const response = await fetch('http://localhost:8002/api/users'); // Adjust the URL if necessary
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const users = await response.json();
+
+            // Clear any existing items
+            itemsContainer.innerHTML = '';
+
+            // Populate the items with user data
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.classList.add('item1'); 
+                userItem.innerHTML = `
+                    <h3 class="t-op-nextlvl">${user.name}</h3>
+                    <h3 class="t-op-nextlvl">${user.email}</h3>
+                    <h3 class="t-op-nextlvl">${user.company || 'N/A'}</h3>
+                    <h3 class="t-op-nextlvl">${user.whoAreYouVisiting}</h3>
+                    <h3 class="t-op-nextlvl">${user.purposeOfVisiting}</h3>
+                `;
+                itemsContainer.appendChild(userItem);
+            });
+
+            // Show the report container
+            reportContainer.style.display = 'block'; // Display the report container
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            itemsContainer.innerHTML = '<p>Error loading user data. Please try again later.</p>';
+            reportContainer.style.display = 'block'; 
         }
-        const users = await response.json();
+    };
 
-        const itemsContainer = document.querySelector('.items'); // Target the items div in the All Visitors section
-
-        // Clear any existing items
-        itemsContainer.innerHTML = '';
-
-        // Populate the items with user data
-        users.forEach(user => {
-            const userItem = document.createElement('div');
-            userItem.classList.add('item1'); 
-            userItem.innerHTML = `
-                <h3 class="t-op-nextlvl">${user.name}</h3>
-                <h3 class="t-op-nextlvl">${user.email}</h3>
-                <h3 class="t-op-nextlvl">${user.company || 'N/A'}</h3>
-                <h3 class="t-op-nextlvl">${user.whoAreYouVisiting}</h3>
-                <h3 class="t-op-nextlvl">${user.purposeOfVisiting}</h3>
-            `;
-            itemsContainer.appendChild(userItem);
-        });
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        const itemsContainer = document.querySelector('.items');
-        itemsContainer.innerHTML = '<p>Error loading user data. Please try again later.</p>';
-    }
+    // Add event listener to the Visitors button
+    document.getElementById('VisitorOption').addEventListener('click', fetchAndDisplayUsers);
+});
+document.getElementById('reportsOption').addEventListener('click', () => {
+    window.open('/api/user', '_blank'); 
 });

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Check-in</title>
+    <link rel="stylesheet" href="/public/employee/css/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Notification Section -->
+    <div id="notification">
+        <div id="notification-content">
+            <i class="fas fa-bell"></i> You have new notifications
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard">
+        <h2>Welcome, [Host Name]</h2>
+        <div id="summary">
+            <p>Pending Approvals: [Count]</p>
+            <p>Upcoming Appointments: [Count]</p>
+        </div>
+    </div>
+
+    <!-- Visitor Approval Section -->
+    <div id="visitor-approval">
+        <h3>Pending Approvals</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Reason</th>
+                    <th>Check-In Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through pending visitors -->
+                <tr>
+                    <td>[Visitor Name]</td>
+                    <td>[Reason]</td>
+                    <td>[Check-In Time]</td>
+                    <td>
+                        <button onclick="approveVisitor([VisitorID])">Approve</button>
+                        <button onclick="denyVisitor([VisitorID])">Deny</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Visitor History Section -->
+    <div id="visitor-history">
+        <h3>Visitor History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Reason</th>
+                    <th>Check-In Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through visitor history -->
+                <tr>
+                    <td>[Visitor Name]</td>
+                    <td>[Reason]</td>
+                    <td>[Check-In Time]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+<script>
+    // Get the host's name from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+        const hostName = urlParams.get('name');
+
+        // Update the dashboard with the host's name
+        document.getElementById('hostName').textContent = hostName || 'Guest'; // Default to 'Guest' if no name is found
+</script>
+</html>

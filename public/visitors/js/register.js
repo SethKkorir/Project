@@ -41,7 +41,7 @@ function validateVisitorData(data) {
             const jsonData = JSON.stringify(data);
   
             // Send data to server using fetch with Content-Type header
-            const response = await fetch('http://localhost:8003/api/users', {
+            const response = await fetch('http://localhost:8002/api/users', {
                 method: 'POST',
                 body: jsonData,
                 headers: {

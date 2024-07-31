@@ -8,6 +8,7 @@
     <title>Visitor Management System</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
@@ -45,14 +46,15 @@
                         <i class="fas fa-tachometer-alt"></i>
                         <h3>Dashboard</h3>
                     </div>
-                    <div class="nav-option option2">
+                    <div class="nav-option option2" id="VisitorOption">
                         <i class="fas fa-user"></i>
                         <h3>Visitors</h3>
                     </div>
-                    <div class="nav-option option3">
-                        <i class="fas fa-briefcase"></i>
-                        <h3>Job Candidates</h3>
+                    <div class="nav-option option3" id="reportsOption">
+                        <i class="fas fa-file-pdf"></i>
+                        <h3>Reports</h3>
                     </div>
+                    
                     <div class="nav-option option4">
                         <i class="fas fa-truck"></i>
                         <h3>Deliveries</h3>
@@ -101,11 +103,11 @@
                 </div>
             </div>
                <!-- User Data Section -->
-               <div class="report-container">
+               <div class="report-container" id="allVisitorsReport" style="display: none;">
                 <div class="report-header">
                     <h1 class="recent-Entities">All Visitors</h1>
                 </div>
-
+            
                 <div class="report-body">
                     <div class="report-topic-heading">
                         <h3 class="t-op">Name</h3>
@@ -114,12 +116,38 @@
                         <h3 class="t-op">Who are they visiting</h3>
                         <h3 class="t-op">Purpose of visiting</h3>
                     </div>
-
+            
                     <div class="items">
                         <!-- User data will be populated here -->
                     </div>
                 </div>
             </div>
+            <div class="report-container" id="reportsSection" style="display: none;">
+                <div class="report-header">
+                    <h1 class="recent-Entities">Visitor Reports</h1>
+                </div>
+            
+                <div class="report-body">
+                    <div class="report-topic-heading">
+                        <h3 class="t-op">Report Type</h3>
+                        <h3 class="t-op">Download</h3>
+                    </div>
+            
+                    <div class="items">
+                        <div class="item1">
+                            <h3 class="t-op-nextlvl">Visitor Trends</h3>
+                            <canvas id="visitorChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="item1">
+                            <h3 class="t-op-nextlvl">Download Report</h3>
+                            <button class="view" onclick="downloadReport()">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
             <!-- Recent Visitors Section -->
             <div class="report-container">
                 <div class="report-header">

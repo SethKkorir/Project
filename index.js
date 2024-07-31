@@ -1,25 +1,30 @@
 const express = require('express');
 const User = require('./models/user');
-// const Host = require('./models/host');
-
+const Host = require('./models/host');
 const cors = require('cors');
-const QRCode = require('qrcode');     
-// const mongoose = require('mongoose');
+const QRCode = require('qrcode');
 require('dotenv').config();
 const defaultPort = 8002;
-let port = process.env.PORT || defaultPort
+let port = process.env.PORT || defaultPort;
 
-
-// To import the users routes
+// To import the users and hosts routes
 const UserRoutes = require('./routes/users');
-//To import databse connection
+const HostRoutes = require('./routes/users2');
+
+// To import database connection
 require('./models/db');
-// middle ware
+
+// Middleware
 const app = express();
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
+
+// Use the routes
 app.use('/api/users', UserRoutes);
+app.use('/api/users2', HostRoutes); 
+// app.use('/api/visitors', visitorRouter);
+
 const logoDesignUrl = 'http://127.0.0.1:5500/public/visitors/html/register.html';
 
 app.get('/generateQR', async (req, res) => {

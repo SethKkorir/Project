@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-// const Host = require('../models/host');
+const PDFDocument = require('pdfkit'); // For PDF generation
+const fs = require('fs'); // For file handling
+const path = require('path'); // For file paths
+const cron = require('node-cron');
 
 const nodemailer = require('nodemailer');
 require('events').EventEmitter.defaultMaxListeners = 20; // or any appropriate number
@@ -18,7 +21,7 @@ const mailTransporter = nodemailer.createTransport({
 
 // Create a new user
 router.post('/', async (req, res) => {
-    const { name, email, company, whoAreYouVisiting, purposeOfVisiting } = req.body;
+    const { name,role,email, company, whoAreYouVisiting, purposeOfVisiting } = req.body;
 
     // Validate required fields
     if (!name || !email || !whoAreYouVisiting || !purposeOfVisiting) {
@@ -30,12 +33,13 @@ router.post('/', async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'A user with this email already exists.' });
-            
+            console.log(' This visitor with this email already exists.');
+
         }
-        console.log(' This visitor with this email already exists.');
+        // console.log(' This visitor with this email already exists.');
 
         // Create a new user
-        const newUser = new User({ name, email, company, whoAreYouVisiting, purposeOfVisiting });
+        const newUser = new User({ name,role: 'Visitor',email, company, whoAreYouVisiting, purposeOfVisiting });
         const savedUser = await newUser.save();
 
         // Prepare email notification
@@ -61,6 +65,60 @@ router.post('/', async (req, res) => {
         console.error('Error creating a user:', err.message);
         res.status(500).json({ error: 'Error creating a user' });
     }
+});
+cron.schedule('0 0 * * *', async () => {
+    try {
+        // Fetch all visitor records before deletion
+        const visitors = await User.find();
+
+        // Generate a PDF report if there are visitors
+        if (visitors.length > 0) {
+            const doc = new PDFDocument();
+            const filePath = path.join(__dirname, 'reports', `visitor_report_${new Date().toISOString().split('T')[0]}.pdf`);
+
+            // Ensure the reports directory exists
+            fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
+            // Pipe the PDF into a file
+            doc.pipe(fs.createWriteStream(filePath));
+
+            // Add a title
+            doc.fontSize(20).text('Visitor Report', { align: 'center' });
+            doc.moveDown();
+
+            // Add visitor details
+            visitors.forEach(visitor => {
+                doc.fontSize(12).text(`Name: ${visitor.name}`);
+                doc.text(`Email: ${visitor.email}`);
+                doc.text(`Company: ${visitor.company || 'N/A'}`);
+                doc.text(`Who are they visiting: ${visitor.whoAreYouVisiting}`);
+                doc.text(`Purpose of visiting: ${visitor.purposeOfVisiting}`);
+                doc.text(`Date: ${visitor.createdAt.toISOString().split('T')[0]}`);
+                doc.moveDown();
+            });
+
+            // Finalize the PDF and end the stream
+            doc.end();
+            console.log(`Visitor report saved to ${filePath}`);
+        }
+
+        // Delete all visitor records from the database
+        await User.deleteMany({});
+        console.log('Visitor records deleted successfully at midnight.');
+    } catch (error) {
+        console.error('Error during scheduled task:', error);
+    }
+});
+// this is for report
+router.get('/report', (req, res) => {
+    const filePath = path.join(__dirname, 'reports', `visitor_report_${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    res.download(filePath, (err) => {
+        if (err) {
+            console.error('Error downloading file:', err);
+            res.status(404).send('Report not found');
+        }
+    });
 });
 
 // Get all users
