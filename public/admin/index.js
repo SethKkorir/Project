@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch and display user data
     const fetchAndDisplayUsers = async () => {
         try {
-            const response = await fetch('http://localhost:8002/api/users'); // Adjust the URL if necessary
+            const response = await fetch('http://localhost:8002/api/users'); 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

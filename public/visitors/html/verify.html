@@ -3,31 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Confirmation Page</title>
     <script src="/js/verify.js" defer></script>
     <link rel="stylesheet" href="/visitors/css/verify.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset some default styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container-wrapper-1 {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .icon {
+            font-size: 100px;
+            color: #4CAF50; /* Green color for the tick icon */
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #333;
+        }
+        .queue {
+            margin-top: 20px;
+            text-align: left; /* Align queue items to the left */
+        }
+        .status {
+            font-size: 16px;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .approved {
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green */
+        }
+        .waiting {
+            background-color: #fff3cd; /* Light yellow */
+            color: #856404; /* Dark yellow */
+        }
+        .pending {
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red */
+        }
+    </style>
 </head>
 <body>
     <div class="container-wrapper-1" id="confirmationSection">
-        <div class="container1">
-            <div class="logo">
-                <!-- <p>A</p> -->
-                <h4>Confirm Your Details</h4>
-            </div>
-            <h1>Confirmation</h1>
-            <p id="p">Please confirm your details below</p>
-            <p id="confirm-name">Name: </p>
-            <p id="confirm-tel">Contact: </p>
-            <p id="confirm-company">Company: </p>
-            <p id="confirm-visiting">Visiting: </p>
-            <p id="confirm-reason">Reason: </p>
+        <div class="icon">
+            <i class="fas fa-check-circle"></i> <!-- Big tick icon -->
         </div>
-        <footer>
-            <button class="btn1" id="back" onclick="goBack()">Back</button>
-            <button class="btn" id="confirm" onclick="submitForm()"><a href="/assets/html/" >Submit</a></button>
-        </footer>
+        <div class="message">
+            <p>Thanks for filling the details, <span id="visitorName">Korir</span> </p>
+            <h1>Checked In</h1>
+        </div>
+        <div class="queue">
+            <h2>Approval Status</h2>
+            <div class="status approved">1. Approved</div>
+            <div class="status waiting">2. Waiting for Approval</div>
+            <div class="status pending">3. Pending Approval</div>
+        </div>
     </div>
+    <script>
+        const visitorName = 'Korir'
+        document.getElementById('visitorName').textContent = visitorName;
+    </script>
 </body>
 </html>
-

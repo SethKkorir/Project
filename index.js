@@ -3,6 +3,10 @@ const User = require('./models/user');
 const Host = require('./models/host');
 const cors = require('cors');
 const QRCode = require('qrcode');
+const bcrypt = require('bcryptjs');
+
+const password = 'pass123';
+
 require('dotenv').config();
 const defaultPort = 8002;
 let port = process.env.PORT || defaultPort;

@@ -1,7 +1,22 @@
 const mongoose = require('mongoose');
 
 const hostSchema = new mongoose.Schema({
-    name:{
+    idNumber:{
+        type:String,
+        required: true,
+    },
+    firstName:{
+        type:String,
+        required: true,
+    },
+    lastName:{
+        type:String,
+        required: true,
+    },
+    surName:{
+        type:String,
+    },
+    mobileNumber:{
         type:String,
         required: true,
     },

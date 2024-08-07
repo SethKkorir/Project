@@ -1,4 +1,3 @@
-/* Main CSS Here */
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
@@ -9,14 +8,14 @@
   font-family: "Poppins", sans-serif;
 }
 :root {
-  --background-color1: #f0f2f5;
-  --background-color2: #ffffff;
+  --background-color1: #c69a92;
+  --background-color2: #000000;
   --background-color3: #e0e0e0;
-  --background-color4: #d6e4ff;
-  --primary-color: #3a3b45;
+  --background-color4: #36a6f5;
+  --primary-color: #0084ff;
   --secondary-color: #5c6ac4;
   --accent-color: #3f51b5;
-  --text-color: #343a40;
+  --text-color: #000000;
 }
 body {
   background-color: var(--background-color4);
@@ -69,7 +68,7 @@ header {
 }
 
 .searchbar input {
-  width: 250px;
+  width: 150px;
   height: 42px;
   border-radius: 50px 0 0 50px;
   background-color: var(--background-color3);
@@ -93,6 +92,7 @@ header {
   gap: 40px;
   position: relative;
   cursor: pointer;
+  color: red;
 }
 .circle {
   height: 7px;
@@ -118,7 +118,7 @@ header {
   align-items: flex-start;
   justify-content: flex-start;
   gap: 30px;
-  margin-top: 70px;
+  margin-top: 10px;
   width: 100vw;
   height: calc(100vh - 70px);
   position: relative;
@@ -198,11 +198,11 @@ header {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 30px;
+  gap: 10px;
   margin-bottom: 30px;
 }
 .box {
-  width: 300px;
+  width: 230px;
   height: 150px;
   border-radius: 20px;
   padding: 20px;
@@ -234,7 +234,7 @@ header {
   color: rgb(0, 0, 0);
 }
 .box4 {
-  background-color: var(--secondary-color);
+  background-color: var(--one-use-color-color);
   color: rgb(0, 0, 0);
 }
 .box:hover {
