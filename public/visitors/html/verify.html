@@ -3,87 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmation Page</title>
-    <script src="/js/verify.js" defer></script>
-    <link rel="stylesheet" href="/visitors/css/verify.css">
+    <title>Visitor Confirmation</title>
+    <link rel="stylesheet" href="/public/visitors/css/verify.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Reset some default styles */
-        body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container-wrapper-1 {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-        .icon {
-            font-size: 100px;
-            color: #4CAF50; /* Green color for the tick icon */
-            margin-bottom: 20px;
-        }
-        .message {
-            margin-bottom: 30px;
-        }
-        h1 {
-            font-size: 24px;
-            margin: 10px 0;
-            color: #333;
-        }
-        .queue {
-            margin-top: 20px;
-            text-align: left; /* Align queue items to the left */
-        }
-        .status {
-            font-size: 16px;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        .approved {
-            background-color: #d4edda; /* Light green */
-            color: #155724; /* Dark green */
-        }
-        .waiting {
-            background-color: #fff3cd; /* Light yellow */
-            color: #856404; /* Dark yellow */
-        }
-        .pending {
-            background-color: #f8d7da; /* Light red */
-            color: #721c24; /* Dark red */
-        }
-    </style>
 </head>
 <body>
-    <div class="container-wrapper-1" id="confirmationSection">
-        <div class="icon">
-            <i class="fas fa-check-circle"></i> <!-- Big tick icon -->
+    <div class="container" id="confirmationSection">
+        <div class="header">
+            <h1>Visitor Check-In</h1>
         </div>
-        <div class="message">
-            <p>Thanks for filling the details, <span id="visitorName">Korir</span> </p>
-            <h1>Checked In</h1>
+        <div class="content">
+            <div class="icon">
+                <i class="fas fa-check-circle"></i> <!-- Checkmark icon -->
+            </div>
+            <p>Thank you for filling in your details, <span id="visitorName" class="highlight"></span>!</p>
+            <h2>Checked In Successfully</h2>
+            <h3>Current Queue</h3>
+            <div id="visitorQueue" class="queue"></div> <!-- Dynamic queue will be populated here -->
         </div>
-        <div class="queue">
-            <h2>Approval Status</h2>
-            <div class="status approved">1. Approved</div>
-            <div class="status waiting">2. Waiting for Approval</div>
-            <div class="status pending">3. Pending Approval</div>
+        <div class="footer">
+            <a href="#" class="cta-button">Go to Dashboard</a>
         </div>
     </div>
     <script>
-        const visitorName = 'Korir'
+        const visitorName = sessionStorage.getItem("visitorName") || "Guest"; // Default to "Guest" if no name found
         document.getElementById('visitorName').textContent = visitorName;
+
+        // Function to fetch the queue of visitors waiting for the same host
+        async function fetchVisitorQueue(hostId) {
+            try {
+                const response = await fetch(`http://localhost:8002/api/users?hostId=${hostId}`); 
+                const visitors = await response.json(); // Thing wi convert the response to a JavaScript array
+                const visitorQueue = document.getElementById('visitorQueue');
+                visitorQueue.innerHTML = ''; // Clear existing content
+
+                // Looping through each visitor and create a status item
+                visitors.forEach(visitor => {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.classList.add('status');
+                    statusDiv.textContent = `${visitor.name} - ${visitor.status}`;
+                    statusDiv.classList.add(visitor.status === 'approved' ? 'approved' : 'waiting');
+                    visitorQueue.appendChild(statusDiv); // Add the status div to the queue
+                });
+            } catch (error) {
+                console.error('Error fetching visitor queue:', error);
+            }
+        }
+
+        // Call the function to fetch the visitor queue when the page loads
+        window.onload = () => {
+    const hostId = sessionStorage.getItem("hostId"); // Get the hostId from sessionStorage
+    console.log('Retrieved hostId:', hostId); // Log the hostId to check its value
+    if (hostId) {
+        fetchVisitorQueue(hostId); // Fetch the queue for the selected host
+    } else {
+        console.error('No hostId found in sessionStorage.');
+    }
+};
     </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ref } = require('pdfkit');
 
 // Visitor Schema
 const visitorSchema = new mongoose.Schema({
@@ -20,14 +21,21 @@ const visitorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    whoAreYouVisiting: {
-        type: String,
-        required: true
-    },
     purposeOfVisiting: {
         type: String,
         required: true
+    },
+    status:{
+        type: String,
+        enum: ['waiting', 'approved'],
+        default: 'waiting'
+    },
+    hostId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Host',
+        required: true
     }
+  
 });
 
 

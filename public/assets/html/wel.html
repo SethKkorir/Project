@@ -40,7 +40,7 @@
       })
       .then(data => {
         const qrCodeImage = document.getElementById('qrcode');
-        qrCodeImage.src = data; // Set the QR code image
+        qrCodeImage.src = data; // Set the QR code to image
       })
       .catch(err => {
         console.error('Error fetching QR code', err);

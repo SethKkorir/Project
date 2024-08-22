@@ -1,74 +1,103 @@
-* {
-    margin: unset;
-    padding: unset;
-}
+/* verify.css */
+
+/* General Styles */
 body {
-    background: rgb(119, 108, 108);
-    background-size: cover;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8; /* Light background */
 }
-.container-wrapper-1 {
-    padding-top: 50px;
+
+/* Container Styles */
+.container {
+    background-color: #ffffff;
     border-radius: 10px;
-    width: 100%;
-    height: 80vh;
-    max-width: 600px;
-    position: absolute;
-    top: 44%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 50px 60px 70px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 500px;
+    margin: 50px auto; /* Centering the container */
     text-align: center;
 }
-.logo p {
-    color: rgb(0, 47, 255);
-    background-color: rgb(0, 0, 0);
-    width: 10%;
-    height: 15%;
-    margin-left: 1%;
-    font-size: 30px;
-    margin-top: 20px;
+
+/* Header Styles */
+.header {
     margin-bottom: 20px;
 }
-.logo h4 {
-    color: rgb(207, 43, 43);
-    margin-left: 1%;
-    font-size: 20px;
-    margin-top: -60px;
+
+.header h1 {
+    color: #333;
+    font-size: 28px;
+}
+
+/* Content Styles */
+.content {
     margin-bottom: 20px;
 }
-#p, p {
-    font-size: 20px;
-    color: black;
+
+.icon {
+    font-size: 80px;
+    color: #28a745; /* Green color for the tick icon */
+    margin-bottom: 20px;
 }
-.btn, .btn1 {
-    min-width: fit-content;
-    position: absolute;
+
+.highlight {
+    color: #007bff; /* Highlight color for the visitor's name */
+    font-weight: bold;
+}
+
+h2 {
+    color: #333;
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+h3 {
+    color: #555;
     font-size: 20px;
+    margin: 10px 0;
+}
+
+/* Queue Styles */
+.queue {
     margin-top: 20px;
-    width: 15%;
-    height: 10vh;
+    text-align: left; /* Align queue items to the left */
+}
+
+/* Status Styles */
+.status {
+    font-size: 16px;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.approved {
+    background-color: #d4edda; /* Light green */
+    color: #155724; /* Dark green */
+}
+
+.waiting {
+    background-color: #fff3cd; /* Light yellow */
+    color: #856404; /* Dark yellow */
+}
+
+/* Footer Styles */
+.footer {
+    margin-top: 20px;
+}
+
+.cta-button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff;
+    padding: 10px 20px;
     border: none;
-    border-radius: 10px;
-    background-image: linear-gradient(90deg, hsl(197deg 100% 63%) 0%, hsl(208deg 100% 60%) 17%, hsl(294deg 100% 55%) 100%);
-}
-.btn {
-    right: 60px;
-    bottom: 10%;
-}
-.btn:hover {
-    color: rgb(255, 255, 255);
-    box-shadow: 10px 10px 10px 0 rgb(0, 0, 0);
-    background: green;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    display: inline-block;
 }
-.btn1 {
-    left: 60px;
-    bottom: 10%;
-}
-.btn1:hover {
-    color: rgb(255, 255, 255);
-    box-shadow: 10px 10px 10px 10px rgb(0, 0, 0);
-    background: red;
-    cursor: pointer;
+
+.cta-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }

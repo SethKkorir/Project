@@ -8,13 +8,13 @@
   font-family: "Poppins", sans-serif;
 }
 :root {
-  --background-color1: #c69a92;
-  --background-color2: #000000;
+  --background-color1: #ffffff;
+  --background-color2: #4a481124;
   --background-color3: #e0e0e0;
   --background-color4: #36a6f5;
-  --primary-color: #0084ff;
+  --primary-color: #094b88;
   --secondary-color: #5c6ac4;
-  --accent-color: #3f51b5;
+  --accent-color: #334ee9;
   --text-color: #000000;
 }
 body {

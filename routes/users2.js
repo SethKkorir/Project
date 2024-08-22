@@ -32,27 +32,18 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Error fetching hosts' });
     }
 });
-router.post('/', async (req, res) => {
+router.post('/login', async (req, res) => {
   const { firstName, password } = req.body;
 
   try {
-    // Finding  the host by their first name
-    const host = await Host.findOne({ firstName });
-
-    if (!host) {
-      return res.status(401).json({ error: 'Invalid first name or password' });
-    }
-
-    // now comparing the provided password with the stored password
-    if (password !== host.password) {
-      return res.status(401).json({ error: 'Invalid first name or password' });
-    }
-
-    // Successful login
-    res.json({ firstName: host.firstName });
+      const host = await Host.findOne({ firstName });
+      if (!host || password !== host.password) {
+          return res.status(401).json({ error: 'Invalid first name or password' });
+      }
+      res.json({ firstName: host.firstName });
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+      console.error('Error during login:', error.message);
+      res.status(500).json({ error: 'Internal server error' });
   }
 });
 

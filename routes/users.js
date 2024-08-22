@@ -7,7 +7,6 @@ const path = require('path'); // For file paths
 const cron = require('node-cron');
 
 const nodemailer = require('nodemailer');
-require('events').EventEmitter.defaultMaxListeners = 20; // or any appropriate number
 
 
 // Nodemailer configuration
@@ -21,10 +20,10 @@ const mailTransporter = nodemailer.createTransport({
 
 // Create a new user
 router.post('/', async (req, res) => {
-    const { name,role,email, company, whoAreYouVisiting, purposeOfVisiting } = req.body;
+    const { name,role,email, company, purposeOfVisiting, hostId } = req.body;
 
     // Validate required fields
-    if (!name || !email || !whoAreYouVisiting || !purposeOfVisiting) {
+    if (!name || !email || !purposeOfVisiting || !hostId) {
         return res.status(400).json({ error: 'All required fields must be provided.' });
     }
 
@@ -33,21 +32,21 @@ router.post('/', async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'A user with this email already exists.' });
-            console.log(' This visitor with this email already exists.');
+            
 
         }
-        // console.log(' This visitor with this email already exists.');
+        console.log(' This visitor with this email already exists.');
 
         // Create a new user
-        const newUser = new User({ name,role: 'Visitor',email, company, whoAreYouVisiting, purposeOfVisiting });
+        const newUser = new User({ name,role: 'Visitor',email, company,  purposeOfVisiting, hostId });
         const savedUser = await newUser.save();
-
+        // console.log(data)
         // Prepare email notification
         const mailDetails = {
             from: process.env.EMAIL_USER,
             to: email, // Send to the user's email
             subject: 'New Visitor Registration',
-            text: `A new visitor has registered:\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || 'N/A'}\nWho are they visiting: ${whoAreYouVisiting}\nPurpose of visiting: ${purposeOfVisiting}`
+            text: `A new visitor has registered:\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || 'N/A'}\nPurpose of visiting: ${purposeOfVisiting}`
         };
 
         // Send email notification
@@ -91,9 +90,9 @@ cron.schedule('0 0 * * *', async () => {
                 doc.fontSize(12).text(`Name: ${visitor.name}`);
                 doc.text(`Email: ${visitor.email}`);
                 doc.text(`Company: ${visitor.company || 'N/A'}`);
-                doc.text(`Who are they visiting: ${visitor.whoAreYouVisiting}`);
+                
                 doc.text(`Purpose of visiting: ${visitor.purposeOfVisiting}`);
-                doc.text(`Date: ${visitor.createdAt.toISOString().split('T')[0]}`);
+                // doc.text(`Date: ${visitor.createdAt.toISOString().split('T')[0]}`);
                 doc.moveDown();
             });
 
@@ -126,7 +125,7 @@ router.get('/', async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);
-        console.log('Getting all users...');
+        // console.log('Getting all users...');
     } catch (err) {
         console.error('Error getting users:', err.message);
         res.status(500).json({ error: 'Error getting users' });
@@ -136,10 +135,10 @@ router.get('/', async (req, res) => {
 // Update a user by ID
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { name, email, company, whoAreYouVisiting, purposeOfVisiting } = req.body;
+    const { name, email, company, purposeOfVisiting } = req.body;
 
     try {
-        const updatedUser = await User.findByIdAndUpdate(id, { name, email, company, whoAreYouVisiting, purposeOfVisiting }, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(id, { name, email, company,  purposeOfVisiting }, { new: true });
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -165,5 +164,45 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error deleting a user' });
     }
 });
+// Approve a visitor by ID
+router.post('/users/:id/approve', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedVisitor = await User.findByIdAndUpdate(id, { status: 'approved' }, { new: true });
+        if (!updatedVisitor) {
+            return res.status(404).json({ error: 'Visitor not found' });
+        }
+        res.json(updatedVisitor);
+    } catch (error) {
+        console.error('Error approving visitor:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
+// Deny a visitor by ID
+router.post('/users/:id/deny', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedVisitor = await User.findByIdAndUpdate(id, { status: 'denied' }, { new: true });
+        if (!updatedVisitor) {
+            return res.status(404).json({ error: 'Visitor not found' });
+        }
+        res.json(updatedVisitor);
+    } catch (error) {
+        console.error('Error denying visitor:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+// Get all users, optionally filtered by host
+router.get('/', async (req, res) => {
+    try {
+        const { hostId } = req.query; // Get the hostId from query parameters
+        const filter = hostId ? { host: hostId } : {}; // Filter by host if hostId is provided
+        const users = await User.find(filter); // Fetch users based on filter
+        res.json(users);
+    } catch (err) {
+        console.error('Error getting users:', err.message);
+        res.status(500).json({ error: 'Error getting users' });
+    }
+});
 module.exports = router;

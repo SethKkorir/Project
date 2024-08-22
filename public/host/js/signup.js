@@ -47,8 +47,8 @@ submitBtn.addEventListener('click', async (event) => {
         const formData = new FormData(document.getElementById('userForm'));
         const data = Object.fromEntries(formData.entries());
 
-        // // Validate form data before hashing
-        // validateFormData(data);
+        // Validate form data
+        validateFormData(data);
 
         // // Hash the password
         // const salt = await bcrypt.genSalt(10);
@@ -78,9 +78,8 @@ submitBtn.addEventListener('click', async (event) => {
 
             const user = await response.json();
             console.log('User created:', user);
-            alert('Welcome! Thank you for registering. We are excited to have you here. You can now proceed to check your visitors.');
-
-            window.location.href = '/public/host/html/dashboard.html';
+            alert('Welcome! Thank you for registering.');
+            window.location.href = '/public/host/html/host.html';
         } else {
             alert('Form submission canceled.');
         }

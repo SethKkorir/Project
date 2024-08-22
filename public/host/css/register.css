@@ -1,40 +1,38 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
-
 :root {
-  --background-color1: #f0f2f5;
-  --background-color2: #ffffff;
-  --background-color3: #e0e0e0;
-  --background-color4: #d6e4ff;
-  --primary-color: #3a3b45;
-  --secondary-color: #5c6ac4;
-  --accent-color: #3f51b5;
-  --text-color: #343a40;
-  --notification-bg: #f8d7da; /* Light red background */
-  --notification-color: #721c24; /* Dark red text */
-  --page-bg: #ffdddd; /* Light red background for the page */
+  --background-color: #f4f4f9;
+  --card-background: #ffffff;
+  --primary-color: #3f51b5;
+  --text-color: #333;
+  --border-color: #e0e0e0;
+  --notification-bg: #ffeb3b;
+  --notification-color: #333;
 }
 
 body {
-  font-family: "Poppins", sans-serif;
-  background-color: var(--page-bg);
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
+  background-color: var(--background-color);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: var(--card-background);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 #notification {
   background-color: var(--notification-bg);
   color: var(--notification-color);
   padding: 10px;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 300px;
-  border-bottom-left-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 1000;
 }
 
 #notification-content {
@@ -43,44 +41,30 @@ body {
   gap: 10px;
 }
 
-#dashboard, #visitor-approval, #visitor-history {
-  margin: 20px;
-  padding: 20px;
-  background-color: var(--background-color1);
-  border-radius: 10px;
-  box-shadow: 1px 1px 15px rgba(161, 182, 253, 0.825);
-}
-
-#dashboard {
-  display: flex;
-  flex-direction: column;
-}
-
-#dashboard h2 {
-  font-size: 24px;
+h2 {
   color: var(--primary-color);
+  margin-bottom: 10px;
 }
 
-#summary p {
-  font-size: 16px;
-  color: var(--text-color);
+.section {
+  margin-bottom: 30px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 th, td {
   padding: 10px;
-  border: 1px solid var(--background-color3);
+  border: 1px solid var(--border-color);
   text-align: left;
 }
 
 th {
-  background-color: var(--background-color2);
-  color: var(--primary-color);
+  background-color: var(--primary-color);
+  color: white;
   font-weight: 600;
 }
 
@@ -89,22 +73,21 @@ td {
 }
 
 button {
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
-  margin-right: 5px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: var(--primary-color);
+  background-color: darken(var(--primary-color), 10%);
 }
 
 h3 {
   font-size: 18px;
   color: var(--primary-color);
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
