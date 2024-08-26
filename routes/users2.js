@@ -10,7 +10,10 @@ router.post('/', async (req, res) => {
 
     try {
         const host = await newHost.save(); // Save the new host
-        res.status(201).json(host); // Respond with 201 Created status
+        res.status(201).json({
+          hostId: host._id,
+          firstName: host.firstName
+        }); // Respond with 201 Created status
     } catch (err) {
         console.error('Error creating host:', err);
         if (err.name === 'ValidationError') {
@@ -40,11 +43,25 @@ router.post('/login', async (req, res) => {
       if (!host || password !== host.password) {
           return res.status(401).json({ error: 'Invalid first name or password' });
       }
-      res.json({ firstName: host.firstName });
+      res.json({ 
+        firstName: host.firstName,
+        hostId: host._id,
+      });
   } catch (error) {
       console.error('Error during login:', error.message);
       res.status(500).json({ error: 'Internal server error' });
   }
 });
+router.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+      if (err) {
+          console.error('Error during logout:', err.message);
+          return res.status(500).json({ error: 'Logout failed' });
+      }
+      res.clearCookie('connect.sid'); // Clear the session cookie
+      res.status(200).json({ message: 'Logged out successfully' });
+  });
+});
+
 
 module.exports = router;

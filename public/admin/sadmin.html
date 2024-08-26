@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign Up</title>
+    <link rel="stylesheet" href="/public/host/css/sign.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-wrapper-1">
+        <div class="x">
+            <h1>Sign up as Admin to Ebrad</h1>
+        </div>
+        <form method="post" action="/api/admin" id="adminForm">
+            <div class="input">
+                <input type="text" name="firstName" placeholder="First Name" required autocomplete="off">
+                <input type="text" name="lastName" placeholder="Last Name" required autocomplete="off">
+                <input type="text" name="surName" placeholder="Surname" required autocomplete="off">
+                <input type="tel" name="mobileNumber" placeholder="Mobile Number" required autocomplete="off">
+                <input type="email" name="email" placeholder="Email" required autocomplete="off">
+                <input type="password" name="password" placeholder="Password" required autocomplete="off">
+                <input type="password" name="confirmPassword" placeholder="Confirm Password" required autocomplete="off">
+            </div>
+            <button class="button" id="submitBtn" type="submit">SIGN UP</button>
+            <div class="sign-up">
+                <p>Already have an account? <a href="/public//admin/alogin.html">Log In</a></p>
+            </div>
+        </form>
+    </div>
+    <script>
+        function validateFormData(data) {
+    const requiredFields = ['firstName', 'lastName', 'surName', 'mobileNumber', 'email', 'password', 'confirmPassword'];
+
+    for (const field of requiredFields) {
+        if (!data[field]) {
+            throw new Error(`${field} is required.`);
+        }
+    }
+
+    if (data.password !== data.confirmPassword) {
+        throw new Error('Passwords do not match.');
+    }
+
+    // Validate name fields
+    validateName(data.firstName, 'First Name');
+    validateName(data.lastName, 'Last Name');
+    validateName(data.surName, 'Surname');
+}
+
+function validateName(name, fieldName) {
+    if (!/^[a-zA-Z]+$/.test(name)) {
+        throw new Error(`Invalid ${fieldName}. Only alphabets are allowed.`);
+    }
+}
+
+function showConfirmationDialog(data) {
+    const confirmationMessage = `
+      Please confirm your details: 
+      First Name: ${data.firstName}
+      Last Name: ${data.lastName}
+      Surname: ${data.surName}
+      Mobile Number: ${data.mobileNumber}
+      Email: ${data.email}
+    `;
+
+    return confirm(confirmationMessage);
+}
+
+const submitBtn = document.getElementById('submitBtn');
+submitBtn.addEventListener('click', async (event) => {
+    try {
+        event.preventDefault();
+
+        const formData = new FormData(document.getElementById('adminForm'));
+        const data = Object.fromEntries(formData.entries());
+
+        // Validate form data
+        validateFormData(data);
+
+        if (showConfirmationDialog(data)) {
+            const jsonData = JSON.stringify(data);
+
+            const response = await fetch('http://localhost:8002/api/admin', {
+                method: 'POST',
+                body: jsonData,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error('Error:', errorData);
+                alert(`Error: ${errorData}`);
+                return;
+            }
+
+            const admin = await response.json();
+            console.log('Admin created:', admin);
+            alert(`Welcome, ${admin.firstName}. Your registration was successful. Proceed to login!`);
+            window.location.href = '/public/admin/alogin.html';
+        } else {
+            alert('Form submission canceled.');
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert(error.message);
+    }
+});
+    </script>
+</body>
+</html>

@@ -12,17 +12,17 @@
     <form action="/users" method="post" id="userForm">
         <div class="container-wrapper-1">
             <div class="container1">
-                <div class="logo">
+                <!-- <div class="logo">
                     <h4>Register Here</h4>
-                </div>
+                </div> -->
                 <h1>New Visitor? Welcome!</h1>
                 <p>Please Enter Your Details Below for Check-in</p>
             </div>
             <div class="input">
-                <input type="text" name="name" id="name" placeholder="Name"><br>
+                <input type="text" name="name" id="name" placeholder="Full Name" autocomplete="off"><br>
                 <!-- <input type="role" name="role" id="role" placeholder="Role"><br> -->
-                <input type="email" name="email" id="email" placeholder="Email"><br>
-                <input type="text" name="company" id="company" placeholder="Company (optional)"><br>
+                <input type="email" name="email" id="email" placeholder="Email" autocomplete="off"><br>
+                <input type="text" name="company" id="company" placeholder="Company (n/a if its not there)" autocomplete="off"><br>
                 <select name="hostId" id="host" required>
                     <option value="" disabled selected>Who are you visiting</option>
                     

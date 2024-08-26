@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Management System</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsive.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js">
+    <!-- <link rel="stylesheet" href="responsive.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
@@ -21,12 +20,12 @@
             <i class="fas fa-bars menuicn" id="menuicn"></i>
         </div>
 
-        <div class="searchbar">
+        <!-- <div class="searchbar">
             <input type="text" placeholder="Search">
             <div class="searchbtn">
                 <i class="fas fa-search"></i>
             </div>
-        </div>
+        </div> -->
 
         <div class="message">
             <div class="circle"></div>
@@ -50,7 +49,7 @@
                         <i class="fas fa-user"></i>
                         <h3>Visitors</h3>
                     </div>
-                    <div class="nav-option option4">
+                    <div class="nav-option option4" id="HostsOption">
                         <i class="fa-solid fa-people-roof"></i>
                         <h3>Hosts</h3>
                     </div>
@@ -58,15 +57,17 @@
                         <i class="fas fa-file-pdf"></i>
                         <h3>Reports</h3>
                     </div>
-                    
-                    
+                    <div class="nav-option option5" id="manageVisitorsOption">
+                        <i class="fas fa-user-check"></i>
+                        <h3>Manage Visitors</h3>
+                    </div>
                     <div class="nav-option option6">
                         <i class="fas fa-cog"></i>
                         <h3>Settings</h3>
                     </div>
                     <div class="nav-option logout">
                         <i class="fas fa-sign-out-alt"></i>
-                        <h3>Logout</h3>
+                        <h3><a href="/public/admin/alogin.html">logout</a></h3>
                     </div>
                 </div>
             </nav>
@@ -83,12 +84,12 @@
             <div class="box-container">
                 <div class="box box1">
                     <div class="text">
-                        <h2 class="topic-heading">120</h2>
+                        <h2 class="topic-heading" id="total-visitors">120</h2>
                         <h2 class="topic">Total Visitors</h2>
                     </div>
                     <i class="fas fa-user"></i>
                 </div>
-                <div class="box box2">
+                <!-- <div class="box box2">
                     <div class="text">
                         <h2 class="topic-heading">80</h2>
                         <h2 class="topic">Pending Approval</h2>
@@ -96,7 +97,7 @@
                     <i class="fa-solid fa-spinner"></i>
                 </div>
                 <div class="box box3">
-                    <div class="text">
+                    <div class="text" is="approve">
                         <h2 class="topic-heading">50</h2>
                         <h2 class="topic">Approved</h2>
                     </div>
@@ -107,92 +108,368 @@
                         <h2 class="topic-heading">80</h2>
                         <h2 class="topic">Declined</h2>
                     </div>
-                    <i class="fa-solid fa-user-slash" style="color: red;"></i>                </div>
+                    <i class="fa-solid fa-user-slash" style="color: red;"></i>
+                </div> -->
             </div>
-               <!-- User Data Section -->
-               <div class="report-container" id="allVisitorsReport" style="display: none;">
+
+            <!-- All Visitors Section -->
+            <div class="report-container" id="allVisitorsReport" style="display: none;">
                 <div class="report-header">
                     <h1 class="recent-Entities">All Visitors</h1>
                 </div>
-            
                 <div class="report-body">
                     <div class="report-topic-heading">
                         <h3 class="t-op">Name</h3>
                         <h3 class="t-op">Email</h3>
                         <h3 class="t-op">Company</h3>
                         <h3 class="t-op">Who are they visiting</h3>
+                        <!-- <h3 class="t-op">Purpose of visiting</h3>
                         <h3 class="t-op">Purpose of visiting</h3>
+                        <h3 class="t-op">Status</h3> -->
                     </div>
-            
                     <div class="items">
-                        <!-- User data will be populated here -->
+                        <!-- Visitor data will be populated here -->
                     </div>
                 </div>
             </div>
+
+            <!-- Hosts Section -->
+            <div class="report-container" id="allHostsReport" style="display: none;">
+                <div class="report-header">
+                    <h1 class="recent-Entities">All Hosts</h1>
+                </div>
+                <div class="report-body">
+                    <div class="report-topic-heading">
+                        <h3 class="t-op">Name</h3>
+                        <h3 class="t-op">Email</h3>
+                        <h3 class="t-op">Department</h3>
+                        <h3 class="t-op">Phone Number</h3>
+                    </div>
+                    <div class="items">
+                        <!-- Host data will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="report-container" id="manageVisitorsSection" style="display: none;">
+                <div class="report-header">
+                    <h1 class="recent-Entities">Manage Visitors</h1>
+                </div>
+                <div class="report-body">
+                    <div class="report-topic-heading">
+                        <h3 class="t-op">Host Name</h3>
+                        <h3 class="t-op">Visitor Name</h3>
+                        <h3 class="t-op">Status</h3>
+                        <h3 class="t-op">Actions</h3>
+                    </div>
+                    <div class="items" id="manage-visitors-list">
+                        <!-- Visitor data will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
             <div class="report-container" id="reportsSection" style="display: none;">
                 <div class="report-header">
                     <h1 class="recent-Entities">Visitor Reports</h1>
                 </div>
-            
                 <div class="report-body">
-                    <div class="report-topic-heading">
-                        <h3 class="t-op">Report Type</h3>
-                        <h3 class="t-op">Download</h3>
-                    </div>
-            
-                    <div class="items">
-                        <div class="item1">
-                            <h3 class="t-op-nextlvl">Visitor Trends</h3>
-                            <canvas id="visitorChart" width="400" height="200"></canvas>
-                        </div>
-                        <div class="item1">
-                            <h3 class="t-op-nextlvl">Download Report</h3>
-                            <button class="view" onclick="downloadReport()">Download</button>
-                        </div>
-                    </div>
+                    <button id="downloadReportBtn">Download Report</button>
                 </div>
             </div>
             
-            
-            
+                <div id="approved-visitors-section" style="display: none;">
+                <h2>Approved Visitors</h2>
+                     <table>
+                    <thead>
+                        <tr>
+                <th>Name</th>
+                <th>Host</th>
+                <th>Status</th>
+                <th>Checked Out</th> </tr>
+                                     </thead>
+                                         <tbody id="approved-visitors-list">
+            <!-- Approved visitors will be added here -->
+                                                       </tbody>
+                         </table>
+                            </div>
+
             <!-- Recent Visitors Section -->
-            <div class="report-container">
-                <div class="report-header">
-                    <h1 class="recent-Entities">Recent Visitors</h1>
-                    <button class="view">View All</button>
-                </div>
-
-                <div class="report-body">
-                    <div class="report-topic-heading">
-                        <h3 class="t-op">Name</h3>
-                        <h3 class="t-op">Check-in</h3>
-                        <h3 class="t-op">Check-out</h3>
-                        <h3 class="t-op">Status</h3>
-                    </div>
-
-                    <div class="items">
-                        <div class="item1">
-                            <h3 class="t-op-nextlvl">John Doe</h3>
-                            <h3 class="t-op-nextlvl">10:00 AM</h3>
-                            <h3 class="t-op-nextlvl">12:00 PM</h3>
-                            <h3 class="t-op-nextlvl label-tag">Checked-out</h3>
-                        </div>
-                        <div class="item1">
-                            <h3 class="t-op-nextlvl">Jane Smith</h3>
-                            <h3 class="t-op-nextlvl">9:30 AM</h3>
-                            <h3 class="t-op-nextlvl">11:30 AM</h3>
-                            <h3 class="t-op-nextlvl label-tag">Checked-out</h3>
-                        </div>
-                        <!-- More static visitor records can go here -->
-                    </div>
-                </div>
-            </div>
-
-         
+ 
         </div>
     </div>
 
-    <script src="/public/admin/index.js"></script> <!-- Include your JavaScript file -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchVisitors();
+            fetchHosts();
+        });
+        async function fetchVisitors() {
+    try {
+        const response = await fetch('http://localhost:8002/api/users'); // Adjust the API endpoint
+        const visitors = await response.json();
+
+        const container = document.querySelector('#allVisitorsReport .items');
+        if (container) {
+            container.innerHTML = ''; // Clear previous content
+
+            visitors.forEach(visitor => {
+                const visitorElement = document.createElement('div');
+                visitorElement.className = 'item1';
+                visitorElement.innerHTML = `
+                    <h3 class="t-op-nextlvl">${visitor.name}</h3>
+                    <h3 class="t-op-nextlvl">${visitor.email}</h3>
+                    <h3 class="t-op-nextlvl">${visitor.company || 'N/A'}</h3>
+                   
+                    <h3 class="t-op-nextlvl">${visitor.approved ? 'Approved' : 'Denied'}</h3> <!-- Display approval status -->
+                `;
+                container.appendChild(visitorElement);
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching visitor data:', error);
+    }
+}
+
+        async function fetchHosts() {
+            try {
+                const response = await fetch('http://localhost:8002/api/users2'); // Adjust the API endpoint
+                const hosts = await response.json();
+
+                const container = document.querySelector('#allHostsReport .items');
+                if (container) {
+                    container.innerHTML = ''; // Clear previous content
+
+                    hosts.forEach(host => {
+                        const hostElement = document.createElement('div');
+                        hostElement.className = 'item1';
+                        hostElement.innerHTML = `
+                            <h3 class="t-op-nextlvl">${host.firstName}</h3>
+                            <h3 class="t-op-nextlvl">${host.email}</h3>
+                            <h3 class="t-op-nextlvl">${host.role|| 'N/A'}</h3>
+                            <h3 class="t-op-nextlvl">${host.mobileNumber || 'N/A'}</h3>
+                        `;
+                        container.appendChild(hostElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching host data:', error);
+            }
+        }
+
+        document.getElementById('VisitorOption').addEventListener('click', () => {
+            const allVisitorsReport = document.querySelector('#allVisitorsReport');
+            const allHostsReport = document.querySelector('#allHostsReport');
+            if (allVisitorsReport && allHostsReport) {
+                allVisitorsReport.style.display = 'block';
+                allHostsReport.style.display = 'none';
+            }
+        });
+
+        document.getElementById('HostsOption').addEventListener('click', () => {
+            const allVisitorsReport = document.querySelector('#allVisitorsReport');
+            const allHostsReport = document.querySelector('#allHostsReport');
+            if (allVisitorsReport && allHostsReport) {
+                allVisitorsReport.style.display = 'none';
+                allHostsReport.style.display = 'block';
+            }
+        });
+
+        // document.querySelector('.logout').addEventListener('click', async () => {
+        //     try {
+        //         await fetch('/api/logout', { method: 'POST' });
+        //         window.location.href = '/login'; // Redirect to login page
+        //     } catch (error) {
+        //         console.error('Error during logout:', error);
+        //     }
+        // });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+    const hostId = sessionStorage.getItem("hostId");
+    const hostName = sessionStorage.getItem("hostName") || "Guest";
+    document.getElementById('hostName').textContent = hostName;
+
+    console.log("Host Id:", hostId);
+
+    // Fetch all visitors
+    try {
+        const visitorResponse = await fetch(`http://localhost:8002/api/users`);
+        if (!visitorResponse.ok) {
+            throw new Error('Failed to fetch visitors');
+        }
+
+        const visitors = await visitorResponse.json();
+        const approvedCountElem = document.querySelector('.box3 .topic-heading');
+        const approvedVisitors = visitors.filter(visitor => visitor.status === 'approved' && visitor.hostId.toString() === hostId);
+
+        // Update the approved count
+        approvedCountElem.textContent = approvedVisitors.length;
+
+        // Add click event to approved count element
+        approvedCountElem.parentElement.addEventListener('click', () => {
+            showApprovedVisitors(approvedVisitors);
+        });
+    } catch (error) {
+        console.error('Error fetching visitors:', error);
+        alert('Error fetching visitors');
+    }
+});
+
+// Function to show approved visitors
+function showApprovedVisitors(approvedVisitors) {
+    const approvedList = document.getElementById('approved-visitors-list');
+    approvedList.innerHTML = ''; // Clear existing content
+
+    approvedVisitors.forEach(visitor => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${visitor.name}</td>
+            <td>${visitor.hostName}</td>
+            <td>${visitor.status}</td>
+            <td>${visitor.checkoutStatus ? 'Checked out' : 'Not Checked out'}</td>
+        `;
+        approvedList.appendChild(row);
+    });
+
+    // Show the approved visitors modal or section
+    document.getElementById('approved-visitors-section').style.display = 'block';
+}
+document.addEventListener('DOMContentLoaded', async () => {
+    // Event listener for Manage Visitors button
+    document.getElementById('manageVisitorsOption').addEventListener('click', async () => {
+        await fetchManageableVisitors();
+        toggleSection('manageVisitorsSection'); // Show Manage Visitors section
+    });
+
+});
+document.addEventListener('DOMContentLoaded', async () => {
+    // Event listener for Manage Visitors button
+    document.getElementById('manageVisitorsOption').addEventListener('click', async () => {
+        await fetchManageableVisitors();
+        toggleSection('manageVisitorsSection'); // Show Manage Visitors section
+    });
+});
+
+// Function to fetch visitors who need approval
+async function fetchManageableVisitors() {
+    try {
+        const response = await fetch(`http://localhost:8002/api/users?status=waiting`); // Adjust the endpoint as needed
+        if (!response.ok) {
+            throw new Error('Failed to fetch manageable visitors');
+        }
+        const visitors = await response.json();
+        populateManageableVisitorsTable(visitors);
+    } catch (error) {
+        console.error('Error fetching manageable visitors:', error);
+    }
+}
+
+// Function to populate the Manage Visitors table
+function populateManageableVisitorsTable(visitors) {
+    const manageVisitorsList = document.getElementById('manage-visitors-list');
+    manageVisitorsList.innerHTML = ''; // Clear existing rows
+
+    visitors.forEach(visitor => {
+        const row = document.createElement('div');
+        row.className = 'report-row'; // Add a class for styling if needed
+        row.innerHTML = `
+            <h3 class="t-op">${visitor.hostName}</h3>
+            <h3 class="t-op">${visitor.name}</h3>
+         
+            <h3 class="t-op">${visitor.status}</h3>
+            <div class="actions">
+                <button class="btn btn-success" onclick="approveVisitor('${visitor._id}')">Approve</button>
+                <button class="btn btn-danger" onclick="denyVisitor('${visitor._id}')">Deny</button>
+            </div>
+        `;
+        manageVisitorsList.appendChild(row);
+    });
+}
+
+// Function to approve a visitor
+async function approveVisitor(visitorId) {
+    try {
+        const response = await fetch(`http://localhost:8002/api/users/${visitorId}/approve`, {
+            method: 'POST'
+        });
+        if (!response.ok) {
+            throw new Error('Failed to approve visitor');
+        }
+
+        alert('Visitor approved successfully!');
+        await fetchManageableVisitors(); // Refresh the list
+    } catch (error) {
+        console.error('Error approving visitor:', error);
+    }
+}
+
+// Function to deny a visitor
+async function denyVisitor(visitorId) {
+    try {
+        const response = await fetch(`http://localhost:8002/api/users/${visitorId}/deny`, {
+            method: 'POST'
+        });
+        if (!response.ok) {
+            throw new Error('Failed to deny visitor');
+        }
+
+        alert('Visitor denied successfully!');
+        await fetchManageableVisitors(); // Refresh the list
+    } catch (error) {
+        console.error('Error denying visitor:', error);
+    }
+}
+document.getElementById('reportsOption').onclick = function() {
+    document.getElementById('reportsSection').style.display = 'block';
+};
+
+// Add event listener for the download button
+document.getElementById('downloadReportBtn').onclick = function() {
+    // Replace with the actual report URL
+    const reportUrl = 'http://localhost:8002/api/users/report'; // Adjust this URL as needed
+
+    // Create a temporary link element
+    const link = document.createElement('a');
+    link.href = reportUrl; // Set the URL for the report
+    link.download = 'visitor_report.pdf'; // Set the desired file name for the download
+
+    // Append the link to the body (required for Firefox)
+    document.body.appendChild(link);
+
+    // Programmatically click the link to trigger the download
+    link.click();
+
+    // Remove the link from the document
+    document.body.removeChild(link);
+};
+// Function to toggle visibility of sections
+function toggleSection(sectionId) {
+    const sections = ['manageVisitorsSection', 'allVisitorsReport', 'allHostsReport', 'reportsSection'];
+    sections.forEach(id => {
+        document.getElementById(id).style.display = id === sectionId ? 'block' : 'none';
+    });
+}
+async function fetchTotalVisitors() {
+    try {
+        const response = await fetch('http://localhost:8002/api/users'); // Adjust the API endpoint as necessary
+        if (!response.ok) {
+            throw new Error('Failed to fetch visitors');
+        }
+
+        const visitors = await response.json(); // Assume the response is an array of visitors
+        const totalVisitorsCount = visitors.length; // Count the number of visitors
+
+        // Update the HTML to display the total visitors
+        document.getElementById('total-visitors').textContent = totalVisitorsCount;
+
+    } catch (error) {
+        console.error('Error fetching total visitors:', error);
+        // Optionally, you can display an error message in the UI if needed
+    }
+}
+
+// Call the function to fetch total visitors when the script loads
+fetchTotalVisitors();
+    </script>
 </body>
 
 </html>

@@ -8,19 +8,57 @@ function validateFormData(data) {
         }
     }
 
-    // Additional validation checks
     if (data.password !== data.confirmPassword) {
         throw new Error('Passwords do not match.');
     }
     
-    if (data.password.length < 8) {
-        throw new Error('Password must be at least 8 characters long.');
-    }
+    // if (data.password.length < 8) {
+    //     throw new Error('Password must be at least 8 characters long.');
+    // }
 
-//     if (!isEmailValid(data.email)) {
-//         throw new Error('Invalid email format.');
-//     }
+    // if (!isEmailValid(data.email)) {
+    //     throw new Error('Invalid email format.');
+    // }
+    const validateName = (firstName) =>{
+        if(!/^[a-zA-Z]+$/.test(firstName)){
+            alert("Invalid first name. Only aplhabets are allowed")
+            throw new error("Invalid names. Only alphabets are allowed.")
+        }
+        if(!/^[a-zA-Z]+$/.test(lastName)){
+            alert("Invalid last name. Only aplhabets are allowed")
+            throw new error("Invalid names. Only alphabets are allowed.")
+
+    
+        }
+        if(!/^[a-zA-Z]+$/.test(surName)){
+            alert("Invalid surname. Only aplhabets are allowed")
+            throw new error("Invalid names. Only alphabets are allowed.")
+
+    
+        }
+    }
+    
+    
 }
+const validateName = (firstName) =>{
+    if(!/^[a-zA-Z]+$/.test(firstName)){
+        alert("Invalid first name. Only aplhabets are allowed")
+        throw new error("Invalid names. Only alphabets are allowed.")
+    }
+    if(!/^[a-zA-Z]+$/.test(lastName)){
+        alert("Invalid last name. Only aplhabets are allowed")
+        throw new error("Invalid names. Only alphabets are allowed.")
+
+
+    }
+    if(!/^[a-zA-Z]+$/.test(surName)){
+        alert("Invalid surname. Only aplhabets are allowed")
+        throw new error("Invalid names. Only alphabets are allowed.")
+
+
+    }
+}
+
 
 function showConfirmationDialog(data) {
     const confirmationMessage = `
@@ -78,7 +116,7 @@ submitBtn.addEventListener('click', async (event) => {
 
             const user = await response.json();
             console.log('User created:', user);
-            alert('Welcome! Thank you for registering.');
+            alert(`Welcome, ${user.firstName} Your registration was successfull. Proceed to login!!`);
             window.location.href = '/public/host/html/host.html';
         } else {
             alert('Form submission canceled.');

@@ -84,7 +84,15 @@ h3 {
 .footer {
     margin-top: 20px;
 }
+.proceed {
+    color: green;
+    font-weight: bold;
+}
 
+.denied {
+    color: red;
+    font-weight: bold;
+}
 .cta-button {
     background-color: #007bff; /* Bootstrap primary color */
     color: #fff;

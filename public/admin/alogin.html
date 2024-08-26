@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Log In</title>
+    <link rel="stylesheet" href="/public/host/css/host.css">
+</head>
+<body>
+    <div class="container-wrapper-1">
+        <h1>Log In to Ebrad Admin Panel</h1>
+        <form id="loginForm" method="post">
+            <div class="input">
+                <input type="text" name="firstName" placeholder="First Name" required> <br>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="button">Log In</button>
+            <div class="sign-up">
+                <p>Don't have an account? <a href="/public/admin/sadmin.html">Sign Up</a></p>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const firstName = document.querySelector('input[name="firstName"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+
+            try {
+                const response = await fetch('http://localhost:8002/api/admin/login', { // URL to point to your admin login endpoint
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ firstName, password }) // Send first name instead of email
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+
+                console.log('Login successful:', data);
+                alert(`Welcome ${data.firstName}, You can now access the admin dashboard.`);
+                sessionStorage.setItem('adminId', data.adminId); // Store the generated admin ID in session storage
+                sessionStorage.setItem('adminName', data.firstName); 
+
+                window.location.href = '/public/admin/index.html'; // Redirect to the admin dashboard
+            
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Login failed: ' + error.message); // Display error message to the user
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,9 +1,10 @@
 const express = require('express');
 const User = require('./models/user');
 const Host = require('./models/host');
+const Admin = require('./models/admin');
 const cors = require('cors');
 const QRCode = require('qrcode');
-
+const path = require('path');
 require('dotenv').config();
 const defaultPort = 8002;
 let port = process.env.PORT || defaultPort;
@@ -11,6 +12,9 @@ let port = process.env.PORT || defaultPort;
 // To import the users and hosts routes
 const UserRoutes = require('./routes/users');
 const HostRoutes = require('./routes/users2');
+const AdminRoutes = require('./routes/admin');
+
+
 
 // To import database connection
 require('./models/db');
@@ -20,11 +24,13 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // Middleware to parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies
+app.use('/reports', express.static(path.join(__dirname, 'reports')));
+
 
 // Use the routes
 app.use('/api/users', UserRoutes);
 app.use('/api/users2', HostRoutes); 
-// app.use('/api/visitors', visitorRouter);
+app.use('/api/admin', AdminRoutes)
 
 const logoDesignUrl = 'http://127.0.0.1:5500/public/visitors/html/register.html';
 

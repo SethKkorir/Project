@@ -5,7 +5,7 @@ menuIcon.addEventListener("click", () => {
     nav.classList.toggle("nav-active");
 });
 // WebSocket connection
-const socket = new WebSocket('ws://localhost:3000');
+const socket = new WebSocket('ws://localhost:8002');
 
 // Event listener for WebSocket connection open
 socket.addEventListener('open', () => {

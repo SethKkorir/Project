@@ -21,6 +21,9 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         console.log('Login successful:', data);
         alert(`Welcome ${data.firstName}, You can now check your visitors.`);
+        sessionStorage.setItem('hostId', data.hostId) //this will store the generated host id in session storage
+        sessionStorage.setItem('hostName', data.firstName); 
+
         window.location.href = '/public/host/html/dashboard.html'; // Adjust path if needed
     
     } catch (error) {

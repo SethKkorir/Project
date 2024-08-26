@@ -22,7 +22,7 @@
             <h2>Welcome, <span id="hostName"></span></h2>
             <div id="summary">
                 <p>Pending Approvals: <span id="pending-count">0</span></p>
-                <p>Upcoming Appointments: <span id="upcoming-count">[Count]</span></p>
+                <!-- <p>Upcoming Appointments: <span id="upcoming-count">[Count]</span></p> -->
             </div>
         </div>
 
@@ -44,99 +44,12 @@
             </table>
         </div>
 
-        <!-- Visitor History Section -->
-        <div id="visitor-history" class="section">
-            <h3>Visitor History</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Reason</th>
-                        <th>Check-In Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Loop through visitor history -->
-                    <tr>
-                        <td>[Visitor Name]</td>
-                        <td>[Reason]</td>
-                        <td>[Check-In Time]</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="logout-container">
+            <button id="logout-btn"><a href="/public/host/html/host.html" style="text-decoration: none;
+            color: white;">Logout</a></button>
         </div>
     </div>
 
-    <script>
-       // Wait for the HTML document to fully load before executing the script
-document.addEventListener('DOMContentLoaded', async () => {
-    // Fetch host name from session storage, default to "Guest" if not found
-    const hostName = sessionStorage.getItem("hostName") || "Guest";
-    // Display the host name on the dashboard
-    document.getElementById('hostName').textContent = hostName;
-    console.log("Host name:", hostName); // Log the host name for debugging
-
-    // Fetch all visitors from the server
-    try {
-        const visitorResponse = await fetch('http://localhost:8002/api/users'); // API endpoint to fetch visitors
-        // Check if the response is successful
-        if (!visitorResponse.ok) {
-            throw new Error('Failed to fetch visitors'); // Throw an error if the fetch fails
-        }
-
-        // Parse the response as JSON to get the list of visitors
-        const visitors = await visitorResponse.json();
-        // Filter the list to get only those visitors with the status "waiting"
-        const pendingVisitors = visitors.filter(visitor => visitor.status === 'waiting');
-
-        // Update the count of pending approvals displayed on the dashboard
-        document.getElementById('pending-count').textContent = pendingVisitors.length;
-
-        // Get a reference to the table body element where pending visitors will be added
-        const pendingVisitorsTable = document.getElementById('pending-visitors');
-        // Loop through each pending visitor
-        pendingVisitors.forEach(visitor => {
-            const row = document.createElement('tr'); // Create a new table row element
-            // Set the inner HTML of the row to display visitor details and action buttons
-            row.innerHTML = `
-                <td>${visitor.name}</td>
-                <td>${visitor.purposeOfVisiting}</td>
-                <td>${new Date(visitor.createdAt).toLocaleString()}</td>
-                <td>
-                    <button onclick="handleVisitorAction('${visitor._id}', 'approve')">Approve</button>
-                    <button onclick="handleVisitorAction('${visitor._id}', 'deny')">Deny</button>
-                </td>
-            `;
-            // Append the new row to the pending visitors table
-            pendingVisitorsTable.appendChild(row);
-        });
-    } catch (error) {
-        // Log any errors that occur during the fetch process
-        console.error('Error fetching visitors:', error);
-        alert('Error fetching visitors'); // Alert the user about the error
-    }
-});
-
-// Function to handle both approving and denying visitors
-async function handleVisitorAction(visitorId, action) {
-    try {
-        // Send a POST request to the server to approve or deny the visitor
-        const response = await fetch(`http://localhost:8002/api/users/${visitorId}/${action}`, {
-            method: 'POST' // Specify the HTTP method as POST
-        });
-        // Check if the response is successful
-        if (!response.ok) {
-            throw new Error(`Failed to ${action} visitor`); // Throw an error if the action fails
-        }
-        // Alert the user that the action was successful
-        alert(`Visitor ${action}d!`);
-        location.reload(); // Reload the page to see updated counts
-    } catch (error) {
-        // Log any errors that occur during the action process
-        console.error(`Error ${action}ing visitor:`, error);
-        alert(`Error ${action}ing visitor`); // Alert the user about the error
-    }
-}
-    </script>
+    <script src="/public/host/js/darsh.js"> </script>
 </body>
 </html>

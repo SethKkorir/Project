@@ -14,15 +14,12 @@
         </div>
         <div class="content">
             <div class="icon">
-                <i class="fas fa-check-circle"></i> <!-- Checkmark icon -->
+                <i class="fas fa-check-circle"></i> 
             </div>
             <p>Thank you for filling in your details, <span id="visitorName" class="highlight"></span>!</p>
             <h2>Checked In Successfully</h2>
             <h3>Current Queue</h3>
             <div id="visitorQueue" class="queue"></div> <!-- Dynamic queue will be populated here -->
-        </div>
-        <div class="footer">
-            <a href="#" class="cta-button">Go to Dashboard</a>
         </div>
     </div>
     <script>
@@ -30,36 +27,87 @@
         document.getElementById('visitorName').textContent = visitorName;
 
         // Function to fetch the queue of visitors waiting for the same host
-        async function fetchVisitorQueue(hostId) {
+        async function fetchVisitorQueue() {
+            const hostId = sessionStorage.getItem("hostId");
+            if (!hostId) {
+                console.error('No hostId found in sessionStorage.');
+                return;
+            }
+
             try {
-                const response = await fetch(`http://localhost:8002/api/users?hostId=${hostId}`); 
-                const visitors = await response.json(); // Thing wi convert the response to a JavaScript array
+                const response = await fetch(`http://localhost:8002/api/users?hostId=${hostId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch visitor queue');
+                }
+                const visitors = await response.json();
                 const visitorQueue = document.getElementById('visitorQueue');
                 visitorQueue.innerHTML = ''; // Clear existing content
 
-                // Looping through each visitor and create a status item
+                let isNextInLine = false; // Flag to track if the visitor is next in line
+
                 visitors.forEach(visitor => {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.classList.add('status');
-                    statusDiv.textContent = `${visitor.name} - ${visitor.status}`;
-                    statusDiv.classList.add(visitor.status === 'approved' ? 'approved' : 'waiting');
-                    visitorQueue.appendChild(statusDiv); // Add the status div to the queue
+                    if (visitor.hostId.toString() === hostId && visitor.status === 'waiting') {
+                        const statusDiv = document.createElement('div');
+                        statusDiv.classList.add('status');
+
+                        const nameSpan = document.createElement('span');
+                        nameSpan.textContent = visitor.name;
+                        statusDiv.appendChild(nameSpan);
+
+                        const statusSpan = document.createElement('span');
+                        statusSpan.classList.add(visitor.status);
+                        statusSpan.textContent = 'Waiting for approval';
+                        statusDiv.appendChild(statusSpan);
+                        visitorQueue.appendChild(statusDiv);
+
+                        // If this visitor is the first waiting visitor, they are next in line
+                        if (!isNextInLine) {
+                            alert("You will be approved soon, the host has been notified.");
+                            isNextInLine = true; // Set the flag to true
+                        }
+                    }
                 });
+
+                // Start checking for approval status
+                checkApprovalStatus();
+
             } catch (error) {
                 console.error('Error fetching visitor queue:', error);
             }
         }
 
-        // Call the function to fetch the visitor queue when the page loads
-        window.onload = () => {
-    const hostId = sessionStorage.getItem("hostId"); // Get the hostId from sessionStorage
-    console.log('Retrieved hostId:', hostId); // Log the hostId to check its value
-    if (hostId) {
-        fetchVisitorQueue(hostId); // Fetch the queue for the selected host
-    } else {
-        console.error('No hostId found in sessionStorage.');
-    }
-};
+        // Function to check approval status of visitors
+        async function checkApprovalStatus() {
+            const visitorId = sessionStorage.getItem("visitorId"); // Assuming you store the visitor's ID
+
+            // Check the approval status every 5 seconds
+            const approvalCheckInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`http://localhost:8002/api/visitor-status?visitorId=${visitorId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch visitor status');
+                    }
+                    const visitorStatus = await response.json();
+
+                    // Check if the visitor has been approved or denied
+                    if (visitorStatus.approved) {
+                        alert(`You have been approved! The secretary will show you where your office is.`);
+                        clearInterval(approvalCheckInterval); // Stop checking once approved
+                        window.location.href = '/public/assets/wel.html'; // Redirect to welcome page
+                    } else if (visitorStatus.denied) {
+                        alert(`You have been denied. Please check with the secretary.`);
+                        clearInterval(approvalCheckInterval); // Stop checking once denied
+                        window.location.href = '/public/assets/wel.html'; // Redirect to welcome page
+                    }
+                } catch (error) {
+                    console.error('Error checking approval status:', error);
+                }
+            }, 5000); // Check every 5 seconds
+        }
+
+        window.onload = function() {
+            fetchVisitorQueue(); // Fetch the visitor queue on page load
+        };
     </script>
 </body>
 </html>

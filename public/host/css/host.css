@@ -10,7 +10,7 @@ body {
 
 .container-wrapper-1 {
     border-radius: 10px;
-    height: 75vh;
+    height: 55vh;
     max-width: 3000px;
     position: absolute;
     top: 50%;
@@ -29,6 +29,7 @@ body {
     width: 240px;
     padding-left: 10px;
     height: 35px;
+    margin-bottom: 30px;
     background-color: transparent;
     border: none; /* Removed borders on top, right, and left */
     border-bottom: 1px solid black;

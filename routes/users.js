@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const PDFDocument = require('pdfkit'); // For PDF generation
-const fs = require('fs'); // For file handling
-const path = require('path'); // For file paths
+const fs = require('fs'); // For file handling, fs is a module meaning File System which is a built in Module in Node.js
+const path = require('path'); // For file paths, path also is module is another built-in module in Node.js that provides utilities for working with file and directory paths.
 const cron = require('node-cron');
 
 const nodemailer = require('nodemailer');
@@ -18,65 +18,87 @@ const mailTransporter = nodemailer.createTransport({
     }
 });
 
-// Create a new user
+// Define a POST route for handling visitor registration
 router.post('/', async (req, res) => {
-    const { name,role,email, company, purposeOfVisiting, hostId } = req.body;
+    // Extract necessary fields from the request body
+    const { name, role, email, company, purposeOfVisiting, hostId } = req.body;
 
-    // Validate required fields
+    // Check if all required fields are provided
     if (!name || !email || !purposeOfVisiting || !hostId) {
+        // If any required field is missing, send a 400 Bad Request response
         return res.status(400).json({ error: 'All required fields must be provided.' });
     }
 
     try {
-        // Check if a user with the same email already exists
+        // Query the database to check if a user with the same email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+            // If a user with the provided email exists, send a 400 Bad Request response
             return res.status(400).json({ error: 'A user with this email already exists.' });
             
-
         }
-        console.log(' This visitor with this email already exists.');
 
-        // Create a new user
-        const newUser = new User({ name,role: 'Visitor',email, company,  purposeOfVisiting, hostId });
+        // If no existing user is found, create a new user object with the provided details
+        const newUser = new User({ 
+            name, 
+            role: 'Visitor', // Set the role of the new user to 'Visitor'
+            email, 
+            company,  
+            purposeOfVisiting, 
+            hostId 
+        });
+        
+        // Save the new user object to the database
         const savedUser = await newUser.save();
-        // console.log(data)
-        // Prepare email notification
+        
+        // Prepare the email notification details
         const mailDetails = {
-            from: process.env.EMAIL_USER,
-            to: email, // Send to the user's email
-            subject: 'New Visitor Registration',
-            text: `A new visitor has registered:\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || 'N/A'}\nPurpose of visiting: ${purposeOfVisiting}`
+            from: process.env.EMAIL_USER, // Set the sender's email address from environment variables
+            to: email, // Set the recipient's email address (the user's email)
+            subject: 'New Visitor Registration', // Set the subject of the email
+            text: `Welcome, kindly wait for the host to approve:\n\nName: ${name}\nEmail: ${email}\nCompany: ${company || 'N/A'}\nPurpose of visiting: ${purposeOfVisiting}`
         };
 
-        // Send email notification
+        // Send the email notification using the mail transporter
         mailTransporter.sendMail(mailDetails, (err, data) => {
             if (err) {
+                // If there's an error sending the email, log the error message
                 console.error('Error sending email:', err.message);
             } else {
+                // If the email is sent successfully, log a success message
                 console.log('Email sent successfully');
             }
         });
 
+        // Respond to the client with the saved user details
         res.json(savedUser);
+        // Log the saved visitor details for reference
         console.log(`Visitor details saved: ${email}`);
     } catch (err) {
+        // If an error occurs during the process, log the error message
         console.error('Error creating a user:', err.message);
+        // Send a 500 Internal Server Error response
         res.status(500).json({ error: 'Error creating a user' });
     }
 });
+//so cron.schedule is a function that will schedule a task that runs everyday at midnight (*/59 * * * *')
 cron.schedule('0 0 * * *', async () => {
     try {
-        // Fetch all visitor records before deletion
+        // Here it find and fetch all visitor records before deletion
         const visitors = await User.find();
 
-        // Generate a PDF report if there are visitors
+        // So here if the visitors records is found it will generate a PDF report using ~pdfkit~ library that ofcourse has been download 
         if (visitors.length > 0) {
             const doc = new PDFDocument();
             const filePath = path.join(__dirname, 'reports', `visitor_report_${new Date().toISOString().split('T')[0]}.pdf`);
+            //_dirname is Nodejs global variable that contain the absolute path to directory
+            //_reports  indicates PDF fill will be saved in a subdirectory called reports
+            //`visitor_report_${new Date().toISOString().split('T')}.pdf` generates a file name that includes the current date in the format YYYY-MM-DD
+
 
             // Ensure the reports directory exists
             fs.mkdirSync(path.dirname(filePath), { recursive: true });
+            //path.dirname(filePath) extracts the directory path from filePath, which is reports in this case.
 
             // Pipe the PDF into a file
             doc.pipe(fs.createWriteStream(filePath));
@@ -119,7 +141,18 @@ router.get('/report', (req, res) => {
         }
     });
 });
-
+router.get('/reports', (req, res) => {
+    const reportsDir = path.join(__dirname, 'reports');
+    fs.readdir(reportsDir, (err, files) => {
+        if (err) {
+            console.error('Error reading reports directory:', err);
+            return res.status(500).send('Error fetching reports');
+        }
+        // Filter for PDF files
+        const reports = files.filter(file => file.endsWith('.pdf'));
+        res.json(reports);
+    });
+});
 // Get all users
 router.get('/', async (req, res) => {
     try {
@@ -164,45 +197,64 @@ router.delete('/:id', async (req, res) => {
         res.status(500).json({ error: 'Error deleting a user' });
     }
 });
-// Approve a visitor by ID
-router.post('/users/:id/approve', async (req, res) => {
-    const { id } = req.params;
+// Approve user
+router.post('/:userId/approve', async (req, res) => {
+    const { userId } = req.params;
+
     try {
-        const updatedVisitor = await User.findByIdAndUpdate(id, { status: 'approved' }, { new: true });
-        if (!updatedVisitor) {
-            return res.status(404).json({ error: 'Visitor not found' });
+        // Update the current user's status to 'approved'
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { status: 'approved' }, // Update the status to 'approved'
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        res.json(updatedVisitor);
+
+        // Notify the next visitor in the queue
+        const nextVisitor = await User.findOne({ hostId: updatedUser.hostId, status: 'waiting' }).sort({ createdAt: 1 });
+        if (nextVisitor) {
+            // Set a notification message for the next visitor
+            nextVisitor.notification = 'You are next in line! Please be patient.';
+            await nextVisitor.save(); // Save the notification to the database
+        }
+
+        res.json(updatedUser); // Return the updated user
     } catch (error) {
-        console.error('Error approving visitor:', error);
+        console.error('Error approving user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Deny a visitor by ID
-router.post('/users/:id/deny', async (req, res) => {
-    const { id } = req.params;
+// Deny user
+router.post('/:userId/deny', async (req, res) => {
+    const { userId } = req.params;
+
     try {
-        const updatedVisitor = await User.findByIdAndUpdate(id, { status: 'denied' }, { new: true });
-        if (!updatedVisitor) {
-            return res.status(404).json({ error: 'Visitor not found' });
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { status: 'denied' }, // Update the status to 'denied'
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
         }
-        res.json(updatedVisitor);
+
+        // Notify the next visitor in the queue
+        const nextVisitor = await User.findOne({ hostId: updatedUser.hostId, status: 'waiting' }).sort({ createdAt: 1 });
+        if (nextVisitor) {
+            // Implement notification logic, e.g., via WebSocket or a notification service
+            console.log(`Notify ${nextVisitor.name}: The host is now available.`);
+        }
+
+        res.json(updatedUser); // Return the updated user
     } catch (error) {
-        console.error('Error denying visitor:', error);
+        console.error('Error denying user:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// Get all users, optionally filtered by host
-router.get('/', async (req, res) => {
-    try {
-        const { hostId } = req.query; // Get the hostId from query parameters
-        const filter = hostId ? { host: hostId } : {}; // Filter by host if hostId is provided
-        const users = await User.find(filter); // Fetch users based on filter
-        res.json(users);
-    } catch (err) {
-        console.error('Error getting users:', err.message);
-        res.status(500).json({ error: 'Error getting users' });
-    }
-});
+
 module.exports = router;
