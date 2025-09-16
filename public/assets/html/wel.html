@@ -3,34 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to Ebrad</title>
-  <link rel="stylesheet" href="/public/assets/css/wel.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Welcome to Ebrad VMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #006DF3 0%, #0037A3 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-primary {
+      background: rgba(255, 255, 255, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .qr-container {
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+    }
+  </style>
 </head>
-<body>
-
-  <main>
-    <section class="intro">
-      <h1>Welcome to <br>Ebrad Vms!</h1>
-    </section>
-  </main>
-
-  <section>
-    <div class="qrcode">
-      <h3>Scan QR code for <br> Touchless Registration</h3> <br>
-      <img src=""\ alt="qr code" id="qrcode" style="background-color: transparent;">
+<body class="text-white">
+  <div class="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-between px-8 lg:px-16 py-12">
+    <!-- Left Content -->
+    <div class="w-full lg:w-1/2 mb-12 lg:mb-0" data-aos="fade-right">
+      <div class="glass-card p-8 lg:p-12 max-w-lg">
+        <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
+          Welcome to <br><span class="text-yellow-300">Ebrad VMS</span>
+        </h1>
+        <p class="text-lg lg:text-xl mb-8 opacity-80">
+          Streamline your visitor management with our touchless registration system. 
+          Scan the QR code or click below to check-in.
+        </p>
+        
+        <a href="/public/visitors/html/register.html" 
+           class="btn-primary inline-flex items-center justify-center px-8 py-4 rounded-full text-lg font-medium transition-all duration-300">
+          <i data-feather="log-in" class="mr-3"></i>
+          Check-in Now
+        </a>
+      </div>
     </div>
-  </section>
-  
-  <footer>
-    <button>
-      <i class="fa-solid fa-circle-check"></i>
-      <a style="text-decoration: none;" href="/public/visitors/html/register.html">Check-in</a>
-    </button>
-  </footer>
+    
+    <!-- Right Content -->
+    <div class="w-full lg:w-1/2 flex flex-col items-center lg:items-end" data-aos="fade-left">
+      <div class="glass-card p-8 text-center mb-8 max-w-md">
+        <h3 class="text-xl lg:text-2xl font-semibold mb-4">
+          Scan QR code for <br> Touchless Registration
+        </h3>
+        <div class="qr-container mx-auto">
+          <img src="" alt="QR Code" id="qrcode" class="w-full h-auto">
+        </div>
+        <p class="mt-4 text-sm opacity-70">
+          Point your camera at the QR code to register instantly
+        </p>
+      </div>
+      
+      <div class="flex space-x-4">
+        <div class="glass-card p-4 text-center">
+          <i data-feather="clock" class="w-8 h-8 mx-auto mb-2"></i>
+          <p class="text-sm">Fast Check-in</p>
+        </div>
+        <div class="glass-card p-4 text-center">
+          <i data-feather="shield" class="w-8 h-8 mx-auto mb-2"></i>
+          <p class="text-sm">Secure</p>
+        </div>
+        <div class="glass-card p-4 text-center">
+          <i data-feather="user-check" class="w-8 h-8 mx-auto mb-2"></i>
+          <p class="text-sm">Contactless</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Fetch the QR code when the page loads
+    // Initialize animations
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out'
+    });
+    
+    // Initialize icons
+    feather.replace();
+    
+    // Fetch QR code
     fetch('http://127.0.0.1:8002/generateQR')
       .then(response => {
         if (!response.ok) {
@@ -40,13 +122,13 @@
       })
       .then(data => {
         const qrCodeImage = document.getElementById('qrcode');
-        qrCodeImage.src = data; // Set the QR code to image
+        qrCodeImage.src = data;
       })
       .catch(err => {
         console.error('Error fetching QR code', err);
+        // Fallback placeholder
+        document.getElementById('qrcode').src = 'http://static.photos/technology/200x200/42';
       });
-//       const cors = require('cors');
-// app.use(cors());
   </script>
 </body>
 </html>

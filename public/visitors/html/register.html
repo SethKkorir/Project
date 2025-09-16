@@ -4,37 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Registration</title>
-
-    <link rel="stylesheet" href="/public/visitors/css/register.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        .input-field {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 119, 255, 0.5);
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #00B4DB 0%, #0083B0 100%);
+        }
+        .gradient-btn:hover {
+            background: linear-gradient(135deg, #0083B0 0%, #00B4DB 100%);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body>
-    <form action="/users" method="post" id="userForm">
-        <div class="container-wrapper-1">
-            <div class="container1">
-                <!-- <div class="logo">
-                    <h4>Register Here</h4>
-                </div> -->
-                <h1>New Visitor? Welcome!</h1>
-                <p>Please Enter Your Details Below for Check-in</p>
+<body class="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center p-4">
+    <form action="/users" method="post" id="userForm" class="glass-effect w-full max-w-md p-8 space-y-6">
+        <div class="text-center space-y-2">
+            <h1 class="text-3xl font-bold text-white">New Visitor? Welcome!</h1>
+            <p class="text-blue-100">Please enter your details below for check-in</p>
+        </div>
+
+        <div class="space-y-4">
+            <div class="relative">
+                <input type="text" name="name" id="name" placeholder="Full Name" autocomplete="off"
+                    class="input-field w-full p-4 text-white placeholder-blue-200 focus:outline-none rounded-lg">
+                <i data-feather="user" class="absolute right-3 top-4 text-blue-200"></i>
             </div>
-            <div class="input">
-                <input type="text" name="name" id="name" placeholder="Full Name" autocomplete="off"><br>
-                <!-- <input type="role" name="role" id="role" placeholder="Role"><br> -->
-                <input type="email" name="email" id="email" placeholder="Email" autocomplete="off"><br>
-                <input type="text" name="company" id="company" placeholder="Company (n/a if its not there)" autocomplete="off"><br>
-                <select name="hostId" id="host" required>
-                    <option value="" disabled selected>Who are you visiting</option>
-                    
-                </select><br>
-                <input type="text" name="purposeOfVisiting" id="purposeOfVisiting" placeholder="Reason for visiting">
+
+            <div class="relative">
+                <input type="email" name="email" id="email" placeholder="Email" autocomplete="off"
+                    class="input-field w-full p-4 text-white placeholder-blue-200 focus:outline-none rounded-lg">
+                <i data-feather="mail" class="absolute right-3 top-4 text-blue-200"></i>
+            </div>
+
+            <div class="relative">
+                <input type="text" name="company" id="company" placeholder="Company (n/a if none)" autocomplete="off"
+                    class="input-field w-full p-4 text-white placeholder-blue-200 focus:outline-none rounded-lg">
+                <i data-feather="briefcase" class="absolute right-3 top-4 text-blue-200"></i>
+            </div>
+
+            <div class="relative">
+                <select name="hostId" id="host" required
+                    class="input-field w-full p-4 text-white placeholder-blue-200 focus:outline-none rounded-lg appearance-none">
+                    <option value="" disabled selected class="text-blue-900">Who are you visiting</option>
+                </select>
+                <i data-feather="chevron-down" class="absolute right-3 top-4 text-blue-200 pointer-events-none"></i>
+            </div>
+
+            <div class="relative">
+                <input type="text" name="purposeOfVisiting" id="purposeOfVisiting" placeholder="Reason for visiting"
+                    class="input-field w-full p-4 text-white placeholder-blue-200 focus:outline-none rounded-lg">
+                <i data-feather="message-square" class="absolute right-3 top-4 text-blue-200"></i>
             </div>
         </div>
-        <footer>
-            <button class="btn1" id="back" onclick="location.href='public/assets/html/wel.html'">Back</button>
-            <button class="btn" id="continueBtn" type="submit">Continue</button>
-        </footer>
+
+        <div class="flex justify-between pt-4">
+            <button type="button" onclick="location.href='public/assets/html/wel.html'" 
+                class="gradient-btn text-white px-6 py-3 rounded-lg font-medium transition-all hover:shadow-lg flex items-center space-x-2">
+                <i data-feather="arrow-left"></i>
+                <span>Back</span>
+            </button>
+            <button type="submit" id="continueBtn"
+                class="gradient-btn text-white px-6 py-3 rounded-lg font-medium transition-all hover:shadow-lg flex items-center space-x-2">
+                <span>Continue</span>
+                <i data-feather="arrow-right"></i>
+            </button>
+        </div>
     </form>
+
+    <script>
+        feather.replace();
+        
+        // Add animation to form elements
+        document.querySelectorAll('.input-field').forEach((input, index) => {
+            input.style.transitionDelay = `${index * 100}ms`;
+            input.classList.add('opacity-0', '-translate-y-2');
+            setTimeout(() => {
+                input.classList.remove('opacity-0', '-translate-y-2');
+            }, 500 + (index * 100));
+        });
+    </script>
     <script src="/public/visitors/js/register.js"></script>
 </body>
 </html>

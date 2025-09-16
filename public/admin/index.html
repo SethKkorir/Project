@@ -1,475 +1,891 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Management System</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- <link rel="stylesheet" href="responsive.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .visitor-table tr:hover {
+            background-color: #f8fafc;
+        }
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-approved {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-denied {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
 </head>
-
-<body>
-
-    <!-- Header Section -->
-    <header>
-        <div class="logosec">
-            <div class="logo">Ebrad VMS</div>
-            <i class="fas fa-bars menuicn" id="menuicn"></i>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50 flex items-center justify-between px-6 py-4">
+        <div class="flex items-center space-x-4">
+            <button id="menu-toggle" class="text-gray-600 focus:outline-none lg:hidden">
+                <i data-feather="menu"></i>
+            </button>
+            <h1 class="text-xl font-bold text-blue-800">Ebrad VMS</h1>
         </div>
-
-        <!-- <div class="searchbar">
-            <input type="text" placeholder="Search">
-            <div class="searchbtn">
-                <i class="fas fa-search"></i>
+        
+        <div class="flex items-center space-x-6">
+            <div class="relative">
+                <i data-feather="bell" class="text-gray-600"></i>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
             </div>
-        </div> -->
-
-        <div class="message">
-            <div class="circle"></div>
-            <i class="fas fa-envelope"></i>
-            <div class="dp">
-                <img src="/images/SETH.jpg" class="dpicn" alt="profile-pic">
+            <div class="flex items-center space-x-2">
+                <img src="http://static.photos/people/40x40/1" alt="Profile" class="w-8 h-8 rounded-full">
+                <span class="text-sm font-medium text-gray-700">Admin</span>
             </div>
         </div>
     </header>
 
     <!-- Main Container -->
-    <div class="main-container">
-        <div class="navcontainer">
-            <nav class="nav">
-                <div class="nav-upper-options">
-                    <div class="nav-option option1">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <h3>Dashboard</h3>
+    <div class="flex pt-16">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40">
+            <div class="h-full overflow-y-auto">
+                <nav class="px-4 py-6">
+                    <div class="space-y-2">
+                        <a href="#" class="flex items-center px-4 py-3 text-white bg-blue-700 rounded-lg" onclick="showSection('dashboard')">
+                            <i data-feather="home" class="w-5 h-5"></i>
+                            <span class="ml-3 font-medium">Dashboard</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg" onclick="showSection('visitors')">
+                            <i data-feather="users" class="w-5 h-5"></i>
+                            <span class="ml-3 font-medium">Visitors</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg" onclick="showSection('hosts')">
+                            <i data-feather="user-check" class="w-5 h-5"></i>
+                            <span class="ml-3 font-medium">Hosts</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg" onclick="showSection('reports')">
+                            <i data-feather="file-text" class="w-5 h-5"></i>
+                            <span class="ml-3 font-medium">Reports</span>
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg" onclick="showSection('manage')">
+                            <i data-feather="settings" class="w-5 h-5"></i>
+                            <span class="ml-3 font-medium">Manage Visitors</span>
+                        </a>
                     </div>
-                    <div class="nav-option option2" id="VisitorOption">
-                        <i class="fas fa-user"></i>
-                        <h3>Visitors</h3>
+                    
+                    <div class="absolute bottom-0 left-0 right-0 p-4">
+                        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg">
+                            <i data-feather="log-out" class="w-5 h-5"></i>
+                            <span class="ml-3 font-medium">Logout</span>
+                        </a>
                     </div>
-                    <div class="nav-option option4" id="HostsOption">
-                        <i class="fa-solid fa-people-roof"></i>
-                        <h3>Hosts</h3>
-                    </div>
-                    <div class="nav-option option3" id="reportsOption">
-                        <i class="fas fa-file-pdf"></i>
-                        <h3>Reports</h3>
-                    </div>
-                    <div class="nav-option option5" id="manageVisitorsOption">
-                        <i class="fas fa-user-check"></i>
-                        <h3>Manage Visitors</h3>
-                    </div>
-                    <div class="nav-option option6">
-                        <i class="fas fa-cog"></i>
-                        <h3>Settings</h3>
-                    </div>
-                    <div class="nav-option logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <h3><a href="/public/admin/alogin.html">logout</a></h3>
-                    </div>
-                </div>
-            </nav>
-        </div>
+                </nav>
+            </div>
+        </aside>
 
-        <div class="main">
-            <div class="searchbar2">
-                <input type="text" name="" id="" placeholder="Search">
-                <div class="searchbtn">
-                    <i class="fas fa-search"></i>
-                </div>
-            </div>
-
-            <div class="box-container">
-                <div class="box box1">
-                    <div class="text">
-                        <h2 class="topic-heading" id="total-visitors">120</h2>
-                        <h2 class="topic">Total Visitors</h2>
-                    </div>
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="box box2">
-                    <div class="text">
-                        <h2 class="topic-heading">80</h2>
-                        <h2 class="topic">Pending Approval</h2>
-                    </div>
-                    <i class="fa-solid fa-spinner"></i>
-                </div>
-                <div class="box box3">
-                    <div class="text" is="approve">
-                        <h2 class="topic-heading">50</h2>
-                        <h2 class="topic">Approved</h2>
-                    </div>
-                    <i class="fa-solid fa-person-circle-check" style="color: green;"></i>
-                </div>
-                <div class="box box4">
-                    <div class="text">
-                        <h2 class="topic-heading">80</h2>
-                        <h2 class="topic">Declined</h2>
-                    </div>
-                    <i class="fa-solid fa-user-slash" style="color: red;"></i>
-                </div>
-            </div>
-
-            <!-- All Visitors Section -->
-            <div class="report-container" id="allVisitorsReport" style="display: none;">
-                <div class="report-header">
-                    <h1 class="recent-Entities">All Visitors</h1>
-                </div>
-                <div class="report-body">
-                    <div class="report-topic-heading">
-                        <h3 class="t-op">Name</h3>
-                        <h3 class="t-op">Email</h3>
-                        <h3 class="t-op">Company</h3>
-                        <h3 class="t-op">Who are they visiting</h3>
-                        <!-- <h3 class="t-op">Purpose of visiting</h3>
-                        <h3 class="t-op">Purpose of visiting</h3>
-                        <h3 class="t-op">Status</h3> -->
-                    </div>
-                    <div class="items">
-                        <!-- Visitor data will be populated here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hosts Section -->
-            <div class="report-container" id="allHostsReport" style="display: none;">
-                <div class="report-header">
-                    <h1 class="recent-Entities">All Hosts</h1>
-                </div>
-                <div class="report-body">
-                    <div class="report-topic-heading">
-                        <h3 class="t-op">Name</h3>
-                        <h3 class="t-op">Email</h3>
-                        <h3 class="t-op">Department</h3>
-                        <h3 class="t-op">Phone Number</h3>
-                    </div>
-                    <div class="items">
-                        <!-- Host data will be populated here -->
-                    </div>
-                </div>
-            </div>
-            <div class="report-container" id="manageVisitorsSection" style="display: none;">
-                <div class="report-header">
-                    <h1 class="recent-Entities">Manage Visitors</h1>
-                </div>
-                <div class="report-body">
-                    <div class="report-topic-heading">
-                        <h3 class="t-op">Host Name</h3>
-                        <h3 class="t-op">Visitor Name</h3>
-                        <h3 class="t-op">Status</h3>
-                        <h3 class="t-op">Actions</h3>
-                    </div>
-                    <div class="items" id="manage-visitors-list">
-                        <!-- Visitor data will be populated here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports Section -->
-            <div class="report-container" id="reportsSection" style="display: none;">
-                <div class="report-header">
-                    <h1 class="recent-Entities">Visitor Reports</h1>
-                </div>
-                <div class="report-body">
-                    <button id="downloadReportBtn">Download Report</button>
-                </div>
-            </div>
-            
-                <div id="approved-visitors-section" style="display: none;">
-                <h2>Approved Visitors</h2>
-                     <table>
-                    <thead>
-                        <tr>
-                <th>Name</th>
-                <th>Host</th>
-                <th>Status</th>
-                <th>Checked Out</th> </tr>
-                                     </thead>
-                                         <tbody id="approved-visitors-list">
-            <!-- Approved visitors will be added here -->
-                                                       </tbody>
-                         </table>
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-64">
+            <div class="px-6 py-6">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="space-y-6">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                        <div class="dashboard-card bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500 transition-all duration-300">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Total Visitors</p>
+                                    <h3 id="total-visitors" class="mt-1 text-3xl font-semibold text-gray-900">120</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                    <i data-feather="users" class="w-6 h-6"></i>
+                                </div>
                             </div>
-
-            <!-- Recent Visitors Section -->
- 
-        </div>
+                            <p class="mt-4 text-xs text-gray-500">Updated just now</p>
+                        </div>
+                        
+                        <div class="dashboard-card bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-500 transition-all duration-300">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Pending Approval</p>
+                                    <h3 class="mt-1 text-3xl font-semibold text-gray-900">80</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                    <i data-feather="clock" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-xs text-gray-500">5 new today</p>
+                        </div>
+                        
+                        <div class="dashboard-card bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500 transition-all duration-300">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Approved</p>
+                                    <h3 class="mt-1 text-3xl font-semibold text-gray-900">50</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                    <i data-feather="check-circle" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-xs text-gray-500">12 new today</p>
+                        </div>
+                        
+                        <div class="dashboard-card bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500 transition-all duration-300">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Declined</p>
+                                    <h3 class="mt-1 text-3xl font-semibold text-gray-900">80</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-red-100 text-red-600">
+                                    <i data-feather="x-circle" class="w-6 h-6"></i>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-xs text-gray-500">3 new today</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold text-gray-800">Visitor Trends</h2>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-xs bg-blue-100 text-blue-600 rounded-full">Daily</button>
+                                    <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">Weekly</button>
+                                    <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">Monthly</button>
+                                </div>
+                            </div>
+                            <canvas id="visitorChart" height="250"></canvas>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold text-gray-800">Visitor Status</h2>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-xs bg-blue-100 text-blue-600 rounded-full">Today</button>
+                                    <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">This Week</button>
+                                </div>
+                            </div>
+                            <canvas id="statusChart" height="250"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Visitors -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-gray-800">Recent Visitors</h2>
+                            <button class="text-sm text-blue-600 hover:text-blue-800">View All</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 visitor-table">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Host</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time In</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full" src="http://static.photos/people/40x40/1" alt="">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">John Smith</div>
+                                                    <div class="text-sm text-gray-500">john@example.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">Sarah Johnson</div>
+                                            <div class="text-sm text-gray-500">Marketing</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">10:30 AM</div>
+                                            <div class="text-sm text-gray-500">Today</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-approved">Approved</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                            <button class="text-green-600 hover:text-green-900">Check Out</button>
+                                        </td>
+                                    </tr>
+                                    <!-- More rows... -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Visitors Section -->
+                <section id="visitors-section" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Visitor Management</h2>
+                        <div class="flex space-x-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Search visitors..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400"></i>
+                            </div>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                                Add Visitor
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex space-x-4">
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">All Visitors</button>
+                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Pending</button>
+                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Approved</button>
+                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Checked Out</button>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <label for="date-filter" class="mr-2 text-sm text-gray-600">Date:</label>
+                                    <input type="date" id="date-filter" class="border border-gray-300 rounded-lg px-3 py-1">
+                                </div>
+                                <div class="flex items-center">
+                                    <label for="host-filter" class="mr-2 text-sm text-gray-600">Host:</label>
+                                    <select id="host-filter" class="border border-gray-300 rounded-lg px-3 py-1">
+                                        <option>All Hosts</option>
+                                        <option>Sarah Johnson</option>
+                                        <option>Michael Brown</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Host</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitors-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Visitor data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-4">
+                            <div class="text-sm text-gray-500">Showing 1 to 10 of 120 entries</div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">Previous</button>
+                                <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">2</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Hosts Section -->
+                <section id="hosts-section" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Host Management</h2>
+                        <div class="flex space-x-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Search hosts..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400"></i>
+                            </div>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                                Add Host
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex space-x-4">
+                                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">All Hosts</button>
+                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Available</button>
+                                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">Unavailable</button>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <label for="host-department-filter" class="mr-2 text-sm text-gray-600">Department:</label>
+                                <select id="host-department-filter" class="border border-gray-300 rounded-lg px-3 py-1">
+                                    <option>All Departments</option>
+                                    <option>Marketing</option>
+                                    <option>Sales</option>
+                                    <option>IT</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hosts-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Host data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-4">
+                            <div class="text-sm text-gray-500">Showing 1 to 10 of 45 entries</div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">Previous</button>
+                                <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">2</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Reports Section -->
+                <section id="reports-section" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Visitor Reports</h2>
+                        <button id="downloadReportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                            <i data-feather="download" class="w-4 h-4 mr-2"></i>
+                            Download Report
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Generate Custom Report</h3>
+                            <form>
+                                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                        <div class="flex space-x-2">
+                                            <input type="date" class="border border-gray-300 rounded-lg px-3 py-2 w-full">
+                                            <span class="flex items-center">to</span>
+                                            <input type="date" class="border border-gray-300 rounded-lg px-3 py-2 w-full">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Visitor Status</label>
+                                        <select class="border border-gray-300 rounded-lg px-3 py-2 w-full">
+                                            <option>All Statuses</option>
+                                            <option>Pending</option>
+                                            <option>Approved</option>
+                                            <option>Declined</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Host</label>
+                                        <select class="border border-gray-300 rounded-lg px-3 py-2 w-full">
+                                            <option>All Hosts</option>
+                                            <option>Sarah Johnson</option>
+                                            <option>Michael Brown</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Report Format</label>
+                                        <select class="border border-gray-300 rounded-lg px-3 py-2 w-full">
+                                            <option>PDF</option>
+                                            <option>Excel</option>
+                                            <option>CSV</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center w-full">
+                                    <i data-feather="file-text" class="w-4 h-4 mr-2"></i>
+                                    Generate Report
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-sm">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Reports</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Daily Visitor Report - 2023-11-15</h4>
+                                        <p class="text-sm text-gray-500">Generated on Nov 15, 2023 at 10:30 AM</p>
+                                    </div>
+                                    <button class="text-blue-600 hover:text-blue-800">
+                                        <i data-feather="download"></i>
+                                    </button>
+                                </div>
+                                <!-- More report items... -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Visitor Statistics</h3>
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+                            <div class="p-4 border border-gray-200 rounded-lg">
+                                <h4 class="text-sm font-medium text-gray-500 mb-2">Total Visitors This Month</h4>
+                                <p class="text-2xl font-bold text-gray-800">245</p>
+                                <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-blue-500 rounded-full" style="width: 75%"></div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">↑ 12% from last month</p>
+                            </div>
+                            <div class="p-4 border border-gray-200 rounded-lg">
+                                <h4 class="text-sm font-medium text-gray-500 mb-2">Average Visit Duration</h4>
+                                <p class="text-2xl font-bold text-gray-800">42 min</p>
+                                <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-green-500 rounded-full" style="width: 60%"></div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">↑ 5% from last month</p>
+                            </div>
+                            <div class="p-4 border border-gray-200 rounded-lg">
+                                <h4 class="text-sm font-medium text-gray-500 mb-2">Approval Rate</h4>
+                                <p class="text-2xl font-bold text-gray-800">82%</p>
+                                <div class="mt-2 h-2 bg-gray-200 rounded-full">
+                                    <div class="h-2 bg-purple-500 rounded-full" style="width: 82%"></div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">↓ 3% from last month</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Manage Visitors Section -->
+                <section id="manage-section" class="hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Manage Visitors</h2>
+                        <div class="flex space-x-4">
+                            <div class="relative">
+                                <input type="text" placeholder="Search visitors..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i data-feather="search" class="absolute left-3 top-2.5 text-gray-400"></i>
+                            </div>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center">
+                                <i data-feather="filter" class="w-4 h-4 mr-2"></i>
+                                Filters
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Host Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitor Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="manage-visitors-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Visitor management data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-4">
+                            <div class="text-sm text-gray-500">Showing 1 to 10 of 25 pending approvals</div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">Previous</button>
+                                <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">2</button>
+                                <button class="px-3 py-1 border border-gray-300 rounded-lg text-gray-700">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Approved Visitors Section -->
+                    <div id="approved-visitors-section" class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Approved Visitors</h3>
+                            <button class="text-sm text-blue-600 hover:text-blue-800">View All</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Host</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Checked Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approved-visitors-list" class="bg-white divide-y divide-gray-200">
+                                    <!-- Approved visitors will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize AOS animations
+        AOS.init();
+        
+        // Initialize feather icons
+        feather.replace();
+        
+        // Toggle sidebar on mobile
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        });
+        
+        // Show specific section and hide others
+        function showSection(sectionId) {
+            // Hide all sections
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('visitors-section').classList.add('hidden');
+            document.getElementById('hosts-section').classList.add('hidden');
+            document.getElementById('reports-section').classList.add('hidden');
+            document.getElementById('manage-section').classList.add('hidden');
+            
+            // Show selected section
+            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
+            
+            // Update active nav item
+            document.querySelectorAll('nav a').forEach(link => {
+                link.classList.remove('bg-blue-700', 'text-white');
+                link.classList.add('text-gray-600', 'hover:bg-gray-100');
+            });
+            
+            // Set active state for clicked nav item
+            const activeLink = Array.from(document.querySelectorAll('nav a')).find(link => 
+                link.textContent.trim().toLowerCase().includes(sectionId)
+            );
+            
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                activeLink.classList.add('bg-blue-700', 'text-white');
+            }
+        }
+        
+        // Set dashboard as default view
+        showSection('dashboard');
+        
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Visitor Trends Chart
+            const visitorCtx = document.getElementById('visitorChart').getContext('2d');
+            const visitorChart = new Chart(visitorCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [25, 32, 28, 41, 36, 18, 10],
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Status Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Approved', 'Pending', 'Declined'],
+                    datasets: [{
+                        data: [50, 80, 80],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Fetch visitors data
             fetchVisitors();
             fetchHosts();
         });
+        
         async function fetchVisitors() {
-    try {
-        const response = await fetch('http://localhost:8002/api/users'); // Adjust the API endpoint
-        const visitors = await response.json();
-
-        const container = document.querySelector('#allVisitorsReport .items');
-        if (container) {
-            container.innerHTML = ''; // Clear previous content
-
-            visitors.forEach(visitor => {
-                const visitorElement = document.createElement('div');
-                visitorElement.className = 'item1';
-                visitorElement.innerHTML = `
-                    <h3 class="t-op-nextlvl">${visitor.name}</h3>
-                    <h3 class="t-op-nextlvl">${visitor.email}</h3>
-                    <h3 class="t-op-nextlvl">${visitor.company || 'N/A'}</h3>
-                   
-                    <h3 class="t-op-nextlvl">${visitor.approved ? 'Approved' : 'Denied'}</h3> <!-- Display approval status -->
-                `;
-                container.appendChild(visitorElement);
-            });
+            try {
+                const response = await fetch('http://localhost:8002/api/users');
+                const visitors = await response.json();
+                
+                // Update total visitors count
+                document.getElementById('total-visitors').textContent = visitors.length;
+                
+                // Populate visitors table
+                const container = document.getElementById('visitors-list');
+                if (container) {
+                    container.innerHTML = '';
+                    
+                    visitors.forEach(visitor => {
+                        const statusClass = visitor.approved ? 'status-approved' : 'status-pending';
+                        const statusText = visitor.approved ? 'Approved' : 'Pending';
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full" src="http://static.photos/people/40x40/${Math.floor(Math.random() * 100)}" alt="">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">${visitor.name || 'N/A'}</div>
+                                        <div class="text-sm text-gray-500">${visitor.company || 'N/A'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${visitor.email || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${visitor.company || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${visitor.hostName || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">${statusText}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                <button class="text-green-600 hover:text-green-900">Contact</button>
+                            </td>
+                        `;
+                        container.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching visitor data:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error fetching visitor data:', error);
-    }
-}
-
+        
         async function fetchHosts() {
             try {
-                const response = await fetch('http://localhost:8002/api/users2'); // Adjust the API endpoint
+                const response = await fetch('http://localhost:8002/api/users2');
                 const hosts = await response.json();
-
-                const container = document.querySelector('#allHostsReport .items');
+                
+                // Populate hosts table
+                const container = document.getElementById('hosts-list');
                 if (container) {
-                    container.innerHTML = ''; // Clear previous content
-
+                    container.innerHTML = '';
+                    
                     hosts.forEach(host => {
-                        const hostElement = document.createElement('div');
-                        hostElement.className = 'item1';
-                        hostElement.innerHTML = `
-                            <h3 class="t-op-nextlvl">${host.firstName}</h3>
-                            <h3 class="t-op-nextlvl">${host.email}</h3>
-                            <h3 class="t-op-nextlvl">${host.role|| 'N/A'}</h3>
-                            <h3 class="t-op-nextlvl">${host.mobileNumber || 'N/A'}</h3>
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full" src="http://static.photos/people/40x40/${Math.floor(Math.random() * 100)}" alt="">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">${host.firstName || 'N/A'} ${host.lastName || ''}</div>
+                                        <div class="text-sm text-gray-500">${host.department || 'N/A'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${host.email || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${host.department || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${host.mobileNumber || 'N/A'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Available</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button class="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                <button class="text-indigo-600 hover:text-indigo-900">Message</button>
+                            </td>
                         `;
-                        container.appendChild(hostElement);
+                        container.appendChild(row);
                     });
                 }
             } catch (error) {
                 console.error('Error fetching host data:', error);
             }
         }
-
-        document.getElementById('VisitorOption').addEventListener('click', () => {
-            const allVisitorsReport = document.querySelector('#allVisitorsReport');
-            const allHostsReport = document.querySelector('#allHostsReport');
-            if (allVisitorsReport && allHostsReport) {
-                allVisitorsReport.style.display = 'block';
-                allHostsReport.style.display = 'none';
-            }
-        });
-
-        document.getElementById('HostsOption').addEventListener('click', () => {
-            const allVisitorsReport = document.querySelector('#allVisitorsReport');
-            const allHostsReport = document.querySelector('#allHostsReport');
-            if (allVisitorsReport && allHostsReport) {
-                allVisitorsReport.style.display = 'none';
-                allHostsReport.style.display = 'block';
-            }
-        });
-
-        // document.querySelector('.logout').addEventListener('click', async () => {
-        //     try {
-        //         await fetch('/api/logout', { method: 'POST' });
-        //         window.location.href = '/login'; // Redirect to login page
-        //     } catch (error) {
-        //         console.error('Error during logout:', error);
-        //     }
-        // });
-
+        
+        // Manage Visitors functionality
         document.addEventListener('DOMContentLoaded', async () => {
-    const hostId = sessionStorage.getItem("hostId");
-    const hostName = sessionStorage.getItem("hostName") || "Guest";
-    document.getElementById('hostName').textContent = hostName;
-
-    console.log("Host Id:", hostId);
-
-    // Fetch all visitors
-    try {
-        const visitorResponse = await fetch(`http://localhost:8002/api/users`);
-        if (!visitorResponse.ok) {
-            throw new Error('Failed to fetch visitors');
-        }
-
-        const visitors = await visitorResponse.json();
-        const approvedCountElem = document.querySelector('.box3 .topic-heading');
-        const approvedVisitors = visitors.filter(visitor => visitor.status === 'approved' && visitor.hostId.toString() === hostId);
-
-        // Update the approved count
-        approvedCountElem.textContent = approvedVisitors.length;
-
-        // Add click event to approved count element
-        approvedCountElem.parentElement.addEventListener('click', () => {
-            showApprovedVisitors(approvedVisitors);
+            // Event listener for Manage Visitors button
+            document.getElementById('manageVisitorsOption').addEventListener('click', async () => {
+                await fetchManageableVisitors();
+                showSection('manage');
+            });
         });
-    } catch (error) {
-        console.error('Error fetching visitors:', error);
-        alert('Error fetching visitors');
-    }
-});
-
-// Function to show approved visitors
-function showApprovedVisitors(approvedVisitors) {
-    const approvedList = document.getElementById('approved-visitors-list');
-    approvedList.innerHTML = ''; // Clear existing content
-
-    approvedVisitors.forEach(visitor => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${visitor.name}</td>
-            <td>${visitor.hostName}</td>
-            <td>${visitor.status}</td>
-            <td>${visitor.checkoutStatus ? 'Checked out' : 'Not Checked out'}</td>
-        `;
-        approvedList.appendChild(row);
-    });
-
-    // Show the approved visitors modal or section
-    document.getElementById('approved-visitors-section').style.display = 'block';
-}
-document.addEventListener('DOMContentLoaded', async () => {
-    // Event listener for Manage Visitors button
-    document.getElementById('manageVisitorsOption').addEventListener('click', async () => {
-        await fetchManageableVisitors();
-        toggleSection('manageVisitorsSection'); // Show Manage Visitors section
-    });
-
-});
-document.addEventListener('DOMContentLoaded', async () => {
-    // Event listener for Manage Visitors button
-    document.getElementById('manageVisitorsOption').addEventListener('click', async () => {
-        await fetchManageableVisitors();
-        toggleSection('manageVisitorsSection'); // Show Manage Visitors section
-    });
-});
-
-// Function to fetch visitors who need approval
-async function fetchManageableVisitors() {
-    try {
-        const response = await fetch(`http://localhost:8002/api/users?status=waiting`); // Adjust the endpoint as needed
-        if (!response.ok) {
-            throw new Error('Failed to fetch manageable visitors');
+        
+        async function fetchManageableVisitors() {
+            try {
+                const response = await fetch(`http://localhost:8002/api/users?status=waiting`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch manageable visitors');
+                }
+                const visitors = await response.json();
+                populateManageableVisitorsTable(visitors);
+            } catch (error) {
+                console.error('Error fetching manageable visitors:', error);
+            }
         }
-        const visitors = await response.json();
-        populateManageableVisitorsTable(visitors);
-    } catch (error) {
-        console.error('Error fetching manageable visitors:', error);
-    }
-}
-
-// Function to populate the Manage Visitors table
-function populateManageableVisitorsTable(visitors) {
-    const manageVisitorsList = document.getElementById('manage-visitors-list');
-    manageVisitorsList.innerHTML = ''; // Clear existing rows
-
-    visitors.forEach(visitor => {
-        const row = document.createElement('div');
-        row.className = 'report-row'; // Add a class for styling if needed
-        row.innerHTML = `
-            <h3 class="t-op">${visitor.hostName}</h3>
-            <h3 class="t-op">${visitor.name}</h3>
-         
-            <h3 class="t-op">${visitor.status}</h3>
-            <div class="actions">
-                <button class="btn btn-success" onclick="approveVisitor('${visitor._id}')">Approve</button>
-                <button class="btn btn-danger" onclick="denyVisitor('${visitor._id}')">Deny</button>
-            </div>
-        `;
-        manageVisitorsList.appendChild(row);
-    });
-}
-
-// Function to approve a visitor
-async function approveVisitor(visitorId) {
-    try {
-        const response = await fetch(`http://localhost:8002/api/users/${visitorId}/approve`, {
-            method: 'POST'
+        
+        function populateManageableVisitorsTable(visitors) {
+            const manageVisitorsList = document.getElementById('manage-visitors-list');
+            manageVisitorsList.innerHTML = '';
+            
+            visitors.forEach(visitor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${visitor.hostName || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${visitor.name || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date().toLocaleTimeString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-pending">Pending</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="approveVisitor('${visitor._id}')" class="mr-2 px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700">Approve</button>
+                        <button onclick="denyVisitor('${visitor._id}')" class="px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700">Deny</button>
+                    </td>
+                `;
+                manageVisitorsList.appendChild(row);
+            });
+        }
+        
+        async function approveVisitor(visitorId) {
+            try {
+                const response = await fetch(`http://localhost:8002/api/users/${visitorId}/approve`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to approve visitor');
+                }
+                
+                alert('Visitor approved successfully!');
+                await fetchManageableVisitors();
+            } catch (error) {
+                console.error('Error approving visitor:', error);
+            }
+        }
+        
+        async function denyVisitor(visitorId) {
+            try {
+                const response = await fetch(`http://localhost:8002/api/users/${visitorId}/deny`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to deny visitor');
+                }
+                
+                alert('Visitor denied successfully!');
+                await fetchManageableVisitors();
+            } catch (error) {
+                console.error('Error denying visitor:', error);
+            }
+        }
+        
+        // Report download functionality
+        document.getElementById('downloadReportBtn').addEventListener('click', function() {
+            const reportUrl = 'http://localhost:8002/api/users/report';
+            const link = document.createElement('a');
+            link.href = reportUrl;
+            link.download = 'visitor_report.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
-        if (!response.ok) {
-            throw new Error('Failed to approve visitor');
-        }
-
-        alert('Visitor approved successfully!');
-        await fetchManageableVisitors(); // Refresh the list
-    } catch (error) {
-        console.error('Error approving visitor:', error);
-    }
-}
-
-// Function to deny a visitor
-async function denyVisitor(visitorId) {
-    try {
-        const response = await fetch(`http://localhost:8002/api/users/${visitorId}/deny`, {
-            method: 'POST'
+        
+        // Approved visitors functionality
+        document.addEventListener('DOMContentLoaded', async () => {
+            const hostId = sessionStorage.getItem("hostId");
+            const hostName = sessionStorage.getItem("hostName") || "Guest";
+            
+            try {
+                const visitorResponse = await fetch(`http://localhost:8002/api/users`);
+                if (!visitorResponse.ok) {
+                    throw new Error('Failed to fetch visitors');
+                }
+                
+                const visitors = await visitorResponse.json();
+                const approvedVisitors = visitors.filter(visitor => visitor.status === 'approved' && visitor.hostId.toString() === hostId);
+                
+                // Update the approved count
+                document.querySelector('.box3 .topic-heading').textContent = approvedVisitors.length;
+                
+                // Add click event to approved count element
+                document.querySelector('.box3').addEventListener('click', () => {
+                    showApprovedVisitors(approvedVisitors);
+                });
+            } catch (error) {
+                console.error('Error fetching visitors:', error);
+            }
         });
-        if (!response.ok) {
-            throw new Error('Failed to deny visitor');
+        
+        function showApprovedVisitors(approvedVisitors) {
+            const approvedList = document.getElementById('approved-visitors-list');
+            approvedList.innerHTML = '';
+            
+            approvedVisitors.forEach(visitor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${visitor.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${visitor.hostName}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-approved">${visitor.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${visitor.checkoutStatus ? 'Yes' : 'No'}</td>
+                `;
+                approvedList.appendChild(row);
+            });
+            
+            // Show the approved visitors section
+            document.getElementById('approved-visitors-section').style.display = 'block';
         }
-
-        alert('Visitor denied successfully!');
-        await fetchManageableVisitors(); // Refresh the list
-    } catch (error) {
-        console.error('Error denying visitor:', error);
-    }
-}
-document.getElementById('reportsOption').onclick = function() {
-    document.getElementById('reportsSection').style.display = 'block';
-};
-
-// Add event listener for the download button
-document.getElementById('downloadReportBtn').onclick = function() {
-    // Replace with the actual report URL
-    const reportUrl = 'http://localhost:8002/api/users/report'; // Adjust this URL as needed
-
-    // Create a temporary link element
-    const link = document.createElement('a');
-    link.href = reportUrl; // Set the URL for the report
-    link.download = 'visitor_report.pdf'; // Set the desired file name for the download
-
-    // Append the link to the body (required for Firefox)
-    document.body.appendChild(link);
-
-    // Programmatically click the link to trigger the download
-    link.click();
-
-    // Remove the link from the document
-    document.body.removeChild(link);
-};
-// Function to toggle visibility of sections
-function toggleSection(sectionId) {
-    const sections = ['manageVisitorsSection', 'allVisitorsReport', 'allHostsReport', 'reportsSection'];
-    sections.forEach(id => {
-        document.getElementById(id).style.display = id === sectionId ? 'block' : 'none';
-    });
-}
-async function fetchTotalVisitors() {
-    try {
-        const response = await fetch('http://localhost:8002/api/users'); // Adjust the API endpoint as necessary
-        if (!response.ok) {
-            throw new Error('Failed to fetch visitors');
-        }
-
-        const visitors = await response.json(); // Assume the response is an array of visitors
-        const totalVisitorsCount = visitors.length; // Count the number of visitors
-
-        // Update the HTML to display the total visitors
-        document.getElementById('total-visitors').textContent = totalVisitorsCount;
-
-    } catch (error) {
-        console.error('Error fetching total visitors:', error);
-        // Optionally, you can display an error message in the UI if needed
-    }
-}
-
-// Call the function to fetch total visitors when the script loads
-fetchTotalVisitors();
     </script>
 </body>
-
 </html>

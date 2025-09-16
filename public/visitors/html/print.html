@@ -3,49 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Visitor Check-In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .camera-container {
+            aspect-ratio: 4/3;
+            background-color: #f0f4f8;
+        }
+    </style>
 </head>
-<body>
-    <section class="printable">
-        <h2>Visitor Information</h2>
-        <table border="1">
-          <tbody>
-            <tr>
-              <th>Name:</th>
-              <td id="name-display"></td>
-            </tr>
-            <tr>
-              <th>Contact:</th>
-              <td id="contact-display"></td>
-            </tr>
-            <tr>
-              <th>Company:</th>
-              <td id="company-display"></td>
-            </tr>
-            <tr>
-              <th>Visiting:</th>
-              <td id="visitor-display"></td>
-            </tr>
-            <tr>
-              <th>Purpose:</th>
-              <td id="purpose-display"></td>
-            </tr>
-          </tbody>
-        </table>
-      
-        <div class="fire-escape">
-          <h3>In Case of Fire</h3>
-          <p>**Important:** Familiarize yourself with the fire escape plan before entering the building.</p>
-          <p>**In the event of a fire:**</p>
-          <ul>
-            <li>Activate the nearest fire alarm.</li>
-            <li>Evacuate the building immediately using the designated fire exits.</li>
-            <li>Do not use elevators. Use stairs only.</li>
-            <li>Proceed to the designated meeting point outside the building.</li>
-            <li>Do not re-enter the building until an authorized official gives the all-clear.</li>
-          </ul>
+<body class="bg-blue-600 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-500 p-6 text-center">
+            <h1 class="text-2xl font-bold text-white">Capture Your Photo for Check-In</h1>
         </div>
-      </section>
-      
+
+        <!-- Camera Preview -->
+        <div class="camera-container w-full relative flex items-center justify-center">
+            <video id="cameraFeed" autoplay playsinline class="w-full h-full object-cover"></video>
+            <div class="absolute inset-0 flex items-center justify-center" id="noCamera">
+                <div class="text-center p-4">
+                    <i data-feather="camera-off" class="w-12 h-12 text-gray-400 mx-auto"></i>
+                    <p class="text-gray-500 mt-2">Camera not available</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="p-6 space-y-4">
+            <div class="flex items-start space-x-3">
+                <div class="bg-blue-100 rounded-full p-2 flex-shrink-0">
+                    <i data-feather="check-circle" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <p class="text-gray-700">Make sure your face is clearly visible</p>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="bg-blue-100 rounded-full p-2 flex-shrink-0">
+                    <i data-feather="check-circle" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <p class="text-gray-700">Remove hats or sunglasses</p>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="bg-blue-100 rounded-full p-2 flex-shrink-0">
+                    <i data-feather="check-circle" class="w-4 h-4 text-blue-600"></i>
+                </div>
+                <p class="text-gray-700">Look directly at the camera</p>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="p-6 pt-0">
+            <button id="captureBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition duration-200 flex items-center justify-center space-x-2">
+                <i data-feather="camera" class="w-5 h-5"></i>
+                <span>Take Photo</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        // Camera access
+        const cameraFeed = document.getElementById('cameraFeed');
+        const noCamera = document.getElementById('noCamera');
+        
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraFeed.srcObject = stream;
+                noCamera.style.display = 'none';
+            } catch (err) {
+                console.error("Camera error:", err);
+                noCamera.style.display = 'flex';
+            }
+        }
+        
+        document.getElementById('captureBtn').addEventListener('click', () => {
+            alert('Photo captured! (This would normally save the photo)');
+        });
+        
+        // Initialize camera when page loads
+        window.addEventListener('DOMContentLoaded', initCamera);
+    </script>
 </body>
 </html>

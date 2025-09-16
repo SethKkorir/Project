@@ -4,27 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Confirmation</title>
-    <link rel="stylesheet" href="/public/visitors/css/verify.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        .status-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        .photo-placeholder {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+        }
+    </style>
 </head>
-<body>
-    <div class="container" id="confirmationSection">
-        <div class="header">
-            <h1>Visitor Check-In</h1>
-        </div>
-        <div class="content">
-            <div class="icon">
-                <i class="fas fa-check-circle"></i> 
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-2xl mx-auto p-6">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden" data-aos="fade-up">
+            <!-- Header -->
+            <div class="bg-blue-600 py-4 px-6">
+                <h1 class="text-2xl font-bold text-white">Visitor Check-In</h1>
             </div>
-            <p>Thank you for filling in your details, <span id="visitorName" class="highlight"></span>!</p>
-            <h2>Checked In Successfully</h2>
-            <h3>Current Queue</h3>
-            <div id="visitorQueue" class="queue"></div> <!-- Dynamic queue will be populated here -->
+
+            <!-- Main Content -->
+            <div class="p-6">
+                <!-- Visitor Info -->
+                <div class="flex items-center space-x-4 mb-6">
+                    <div class="photo-placeholder w-16 h-16 rounded-full flex items-center justify-center text-blue-600">
+                        <i data-feather="user" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold" id="visitorName">Guest</h2>
+                        <p class="text-gray-500">Checked in at <span id="checkInTime">Loading...</span></p>
+                    </div>
+                </div>
+
+                <!-- Status Message -->
+                <div class="bg-blue-50 rounded-lg p-4 mb-6 flex items-start">
+                    <i data-feather="info" class="text-blue-500 mr-3 flex-shrink-0"></i>
+                    <p>Thanks for checking in! Please take a seat while we notify your host.</p>
+                </div>
+
+                <!-- Host Status -->
+                <div class="border border-gray-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium">Host Status</h3>
+                        <div class="flex items-center">
+                            <span class="h-2 w-2 rounded-full bg-yellow-500 status-pulse mr-2"></span>
+                            <span class="text-sm text-yellow-600">Awaiting approval</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">Your host, <span id="hostName">John Mwangi</span>, has been notified</p>
+                </div>
+
+                <!-- Queue Position -->
+                <div class="border border-gray-200 rounded-lg p-4 mb-6 bg-gray-50">
+                    <h3 class="font-medium mb-2">Queue Position</h3>
+                    <div class="flex items-baseline">
+                        <span class="text-4xl font-bold text-blue-600 mr-2" id="queuePosition">3</span>
+                        <span class="text-gray-600">in the queue</span>
+                    </div>
+                    <div id="visitorQueue" class="mt-4 space-y-2"></div>
+                </div>
+
+                <!-- Actions -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition flex items-center justify-center">
+                        <i data-feather="edit" class="w-4 h-4 mr-2"></i> Edit Details
+                    </button>
+                    <button class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition flex items-center justify-center">
+                        <i data-feather="phone" class="w-4 h-4 mr-2"></i> Contact Reception
+                    </button>
+                    <button class="bg-white border border-red-300 text-red-600 py-2 px-4 rounded-lg hover:bg-red-50 transition flex items-center justify-center">
+                        <i data-feather="x" class="w-4 h-4 mr-2"></i> Cancel Check-In
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
+
     <script>
-        const visitorName = sessionStorage.getItem("visitorName") || "Guest"; // Default to "Guest" if no name found
+        // Initialize animations and icons
+        AOS.init();
+        feather.replace();
+
+        // Set visitor name from session storage
+        const visitorName = sessionStorage.getItem("visitorName") || "Guest";
         document.getElementById('visitorName').textContent = visitorName;
+
+        // Set current time
+        const now = new Date();
+        document.getElementById('checkInTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         // Function to fetch the queue of visitors waiting for the same host
         async function fetchVisitorQueue() {
@@ -43,30 +118,50 @@
                 const visitorQueue = document.getElementById('visitorQueue');
                 visitorQueue.innerHTML = ''; // Clear existing content
 
-                let isNextInLine = false; // Flag to track if the visitor is next in line
+                let queuePosition = 0;
+                let isNextInLine = false;
 
                 visitors.forEach(visitor => {
                     if (visitor.hostId.toString() === hostId && visitor.status === 'waiting') {
+                        queuePosition++;
                         const statusDiv = document.createElement('div');
-                        statusDiv.classList.add('status');
+                        statusDiv.classList.add('flex', 'justify-between', 'items-center', 'py-2', 'px-3', 'bg-white', 'rounded-lg', 'border', 'border-gray-100');
 
                         const nameSpan = document.createElement('span');
                         nameSpan.textContent = visitor.name;
-                        statusDiv.appendChild(nameSpan);
+                        nameSpan.classList.add('font-medium');
 
                         const statusSpan = document.createElement('span');
-                        statusSpan.classList.add(visitor.status);
-                        statusSpan.textContent = 'Waiting for approval';
+                        statusSpan.classList.add('text-sm', 'text-gray-500');
+                        statusSpan.textContent = 'Waiting';
+                        
+                        statusDiv.appendChild(nameSpan);
                         statusDiv.appendChild(statusSpan);
                         visitorQueue.appendChild(statusDiv);
 
-                        // If this visitor is the first waiting visitor, they are next in line
-                        if (!isNextInLine) {
-                            alert("You will be approved soon, the host has been notified.");
-                            isNextInLine = true; // Set the flag to true
+                        if (visitor.name === visitorName) {
+                            document.getElementById('queuePosition').textContent = queuePosition;
+                            if (queuePosition === 1) {
+                                isNextInLine = true;
+                            }
                         }
                     }
                 });
+
+                if (isNextInLine) {
+                    setTimeout(() => {
+                        const notification = document.createElement('div');
+                        notification.classList.add('bg-blue-50', 'border-l-4', 'border-blue-500', 'p-4', 'mt-4', 'rounded-r-lg');
+                        notification.innerHTML = `
+                            <div class="flex items-center">
+                                <i data-feather="bell" class="text-blue-500 mr-2"></i>
+                                <p class="text-sm text-blue-700">You're next in line! Your host has been notified.</p>
+                            </div>
+                        `;
+                        visitorQueue.parentNode.insertBefore(notification, visitorQueue.nextSibling);
+                        feather.replace();
+                    }, 2000);
+                }
 
                 // Start checking for approval status
                 checkApprovalStatus();
@@ -78,7 +173,7 @@
 
         // Function to check approval status of visitors
         async function checkApprovalStatus() {
-            const visitorId = sessionStorage.getItem("visitorId"); // Assuming you store the visitor's ID
+            const visitorId = sessionStorage.getItem("visitorId");
 
             // Check the approval status every 5 seconds
             const approvalCheckInterval = setInterval(async () => {
@@ -91,13 +186,33 @@
 
                     // Check if the visitor has been approved or denied
                     if (visitorStatus.approved) {
-                        alert(`You have been approved! The secretary will show you where your office is.`);
-                        clearInterval(approvalCheckInterval); // Stop checking once approved
-                        window.location.href = '/public/assets/wel.html'; // Redirect to welcome page
+                        const statusIndicator = document.querySelector('.status-pulse');
+                        if (statusIndicator) {
+                            statusIndicator.classList.remove('bg-yellow-500', 'status-pulse');
+                            statusIndicator.classList.add('bg-green-500');
+                            document.querySelector('.text-yellow-600').textContent = 'Approved';
+                            document.querySelector('.text-yellow-600').classList.remove('text-yellow-600');
+                            document.querySelector('.text-yellow-600').classList.add('text-green-600');
+                        }
+                        
+                        clearInterval(approvalCheckInterval);
+                        setTimeout(() => {
+                            window.location.href = '/public/assets/wel.html';
+                        }, 3000);
                     } else if (visitorStatus.denied) {
-                        alert(`You have been denied. Please check with the secretary.`);
-                        clearInterval(approvalCheckInterval); // Stop checking once denied
-                        window.location.href = '/public/assets/wel.html'; // Redirect to welcome page
+                        const statusIndicator = document.querySelector('.status-pulse');
+                        if (statusIndicator) {
+                            statusIndicator.classList.remove('bg-yellow-500', 'status-pulse');
+                            statusIndicator.classList.add('bg-red-500');
+                            document.querySelector('.text-yellow-600').textContent = 'Denied';
+                            document.querySelector('.text-yellow-600').classList.remove('text-yellow-600');
+                            document.querySelector('.text-yellow-600').classList.add('text-red-600');
+                        }
+                        
+                        clearInterval(approvalCheckInterval);
+                        setTimeout(() => {
+                            window.location.href = '/public/assets/wel.html';
+                        }, 3000);
                     }
                 } catch (error) {
                     console.error('Error checking approval status:', error);
@@ -106,7 +221,7 @@
         }
 
         window.onload = function() {
-            fetchVisitorQueue(); // Fetch the visitor queue on page load
+            fetchVisitorQueue();
         };
     </script>
 </body>

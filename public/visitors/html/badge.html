@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Badge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <style>
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        .badge-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .expiry-indicator {
+            background: linear-gradient(90deg, #3b82f6 0%, #3b82f6 var(--percentage), #e5e7eb var(--percentage), #e5e7eb 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 print:p-0">
+    <div class="no-print absolute top-4 right-4">
+        <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+            <i data-feather="printer" class="w-4 h-4 mr-2"></i> Print Badge
+        </button>
+    </div>
+
+    <div class="w-full max-w-md bg-white rounded-xl overflow-hidden badge-shadow">
+        <!-- Badge Header -->
+        <div class="bg-blue-700 py-3 px-6 text-center">
+            <h1 class="text-xl font-bold text-white">VISITOR</h1>
+        </div>
+
+        <!-- Badge Content -->
+        <div class="p-6">
+            <!-- Visitor Photo & Name -->
+            <div class="flex items-center space-x-4 mb-6">
+                <div id="visitorPhoto" class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <i data-feather="user" class="w-10 h-10 text-gray-500"></i>
+                </div>
+                <div>
+                    <h2 id="visitorName" class="text-2xl font-bold text-gray-800">Visitor Name</h2>
+                    <p class="text-gray-600">Checked in: <span id="checkInTime">00:00 AM</span></p>
+                </div>
+            </div>
+
+            <!-- Visit Details -->
+            <div class="space-y-4 mb-6">
+                <div class="flex">
+                    <div class="w-1/3 font-medium text-gray-500">Host</div>
+                    <div id="hostName" class="w-2/3 font-medium">John Smith</div>
+                </div>
+                <div class="flex">
+                    <div class="w-1/3 font-medium text-gray-500">Purpose</div>
+                    <div id="visitPurpose" class="w-2/3">Business Meeting</div>
+                </div>
+                <div class="flex">
+                    <div class="w-1/3 font-medium text-gray-500">Expires</div>
+                    <div id="expiryTime" class="w-2/3">5:00 PM</div>
+                </div>
+                <div class="flex">
+                    <div class="w-1/3 font-medium text-gray-500">Emergency</div>
+                    <div class="w-2/3">Reception: x100</div>
+                </div>
+            </div>
+
+            <!-- Expiry Indicator -->
+            <div class="mb-6">
+                <div class="h-2 rounded-full expiry-indicator mb-1" style="--percentage: 70%"></div>
+                <p class="text-xs text-gray-500 text-right">Valid for <span id="remainingTime">6h 15m</span></p>
+            </div>
+
+            <!-- QR Code -->
+            <div class="flex flex-col items-center border-t border-gray-200 pt-6">
+                <div id="qrCode" class="w-32 h-32 bg-white p-2 border border-gray-200 mb-3"></div>
+                <p class="text-xs text-gray-500 text-center">Scan this QR code at security checkpoints</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize icons
+        feather.replace();
+
+        // Set visitor details from session storage
+        document.addEventListener('DOMContentLoaded', function() {
+            const visitorName = sessionStorage.getItem("visitorName") || "Guest";
+            const hostName = sessionStorage.getItem("hostName") || "Host Name";
+            const visitPurpose = sessionStorage.getItem("visitPurpose") || "Meeting";
+            
+            document.getElementById('visitorName').textContent = visitorName;
+            document.getElementById('hostName').textContent = hostName;
+            document.getElementById('visitPurpose').textContent = visitPurpose;
+
+            // Set current time
+            const now = new Date();
+            document.getElementById('checkInTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Set expiry time (current time + 8 hours)
+            const expiryTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+            document.getElementById('expiryTime').textContent = expiryTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            // Calculate remaining time
+            updateRemainingTime();
+            setInterval(updateRemainingTime, 60000); // Update every minute
+
+            // Generate QR code
+            const qr = qrcode(0, 'L');
+            qr.addData(JSON.stringify({
+                visitorId: sessionStorage.getItem("visitorId") || "12345",
+                name: visitorName,
+                host: hostName,
+                checkIn: now.toISOString()
+            }));
+            qr.make();
+            document.getElementById('qrCode').innerHTML = qr.createImgTag(4);
+        });
+
+        function updateRemainingTime() {
+            const now = new Date();
+            const expiryTime = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+            const diff = expiryTime - now;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('remainingTime').textContent = `${hours}h ${minutes}m`;
+            
+            // Update progress bar (8 hours total)
+            const percentage = (diff / (8 * 60 * 60 * 1000)) * 100;
+            document.querySelector('.expiry-indicator').style.setProperty('--percentage', `${percentage}%`);
+        }
+    </script>
+</body>
+</html>
